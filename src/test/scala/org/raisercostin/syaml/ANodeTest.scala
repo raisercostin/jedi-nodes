@@ -18,7 +18,7 @@ class ANodeTest extends org.raisercostin.jedi.impl.SlfLogger {
           at3: value3
         child2: value2-child2""").get
     println(all)
-    val something = all.child("something").children//.toSeq
+    val something = all.child("something")//.toSeq
 //    println(something)
 //    assertEquals(2, something.size)
 //    assertEquals(3, something(0).children.size)
@@ -50,9 +50,9 @@ class ANodeTest extends org.raisercostin.jedi.impl.SlfLogger {
   //import rapture.json.formatters.humanReadable._
   //import rapture.json.jsonBackends.spray._
   import rapture.core.modes.returnTry
-    println("all3[something]="+all.something.as[Json])
-    println("all4[something]="+all.something.child1.as[Json])
-    val something = all.child("something").children//.toSeq
+//    println("all3[something]="+all.something.as[Json])
+//    println("all4[something]="+all.something.child1.as[Json])
+    val something = all.child("something")//.toSeq
 //    println(something)
 //    assertEquals(2, something.size)
 //    assertEquals(3, something(0).children.size)

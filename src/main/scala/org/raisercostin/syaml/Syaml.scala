@@ -77,6 +77,7 @@ import org.raisercostin.jedi.Locations
 import org.raisercostin.jedi.impl.SlfLogger
 import org.raisercostin.jedi.impl.SlfLogger
 import org.raisercostin.jedi.impl.SlfLogger
+import scala.runtime.ScalaRunTime
 
 //case class DynamicSyaml(f: Syaml) {
 //  def selectDynamic(name: String): DynamicSyaml = DynamicSyaml(f.get(name))
@@ -248,4 +249,5 @@ case class SyamlError(error: Throwable)(implicit val source: SyamlSource) extend
   override def value: Any = error
   override def children: Iterable[Syaml] = Seq()
   override def as[T](implicit ct: ClassTag[T]): Try[T] = Failure{error}
+  override def toString: String = ScalaRunTime._toString(this)
 }

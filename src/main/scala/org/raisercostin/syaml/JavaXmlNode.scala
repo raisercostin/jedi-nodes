@@ -23,7 +23,7 @@ case class JavaXmlNode(val $root: MutableCell, val path: Vector[Either[Int, Stri
   import javax.xml.xpath.XPathFactory
   val xPathfactory = XPathFactory.newInstance();
 
-  override def queryOne(path: NodeSelector): ANode = {
+  def queryOne(path: String): ANode = {
     val xpath = xPathfactory.newXPath()
     val expr = xpath.compile(path)
     val nl: NodeList = expr.evaluate(value, XPathConstants.NODESET).asInstanceOf[NodeList]

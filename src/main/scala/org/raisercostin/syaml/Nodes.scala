@@ -11,11 +11,10 @@ import rapture.data.MutableCell
 
 /*-------------------------------------------------------------------------------------------------------*/
 @deprecated("too simple xpath selections")
-case class ScalaElemNode(val $root:MutableCell, val path: Vector[Either[Int, String]] = Vector()) extends SimpleANode with ANode {
-  def value: Node = $root.value.asInstanceOf[Node]
-  override def id = Option(value.\@("id")).filter(_.nonEmpty).getOrElse(super.id)
-//  override def child(key: NodeSelector): ANode = Try { one(value.\(key)) }.
-//    map(x=>ScalaElemNode(x,path :+ Right[Int,String](key))).recover { case x: Throwable => ANodeError(MutableCell(new IllegalArgumentException(s"When searching for child [$key]: " + x.getMessage, x))) }.get
+case class ScalaElemNode(value:Node) extends SimpleANode with ANode {
+//  override def id = Option(value.\@("id")).filter(_.nonEmpty).getOrElse(super.id)
+  override def child(key: NodeSelector): ANode = Try { one(value.\(key)) }.
+    map(x=>ScalaElemNode(x)).recover { case x: Throwable => ANodeError(MutableCell(new IllegalArgumentException(s"When searching for child [$key]: " + x.getMessage, x))) }.get
   //override def asStream: Stream[ANode] = value.\\("_").toStream.map(x => ScalaElemNode(x))
 
   private def one(seq: NodeSeq): Node = seq match {
@@ -24,7 +23,7 @@ case class ScalaElemNode(val $root:MutableCell, val path: Vector[Either[Int, Str
     case a: NodeSeq if a.length > 1  => throw new IllegalArgumentException(s"There are multiple child nodes.")
   }
   def $deref($path: Vector[Either[Int,String]]): ANode = ???//new MindMapJavaXmlNode(node.key,path ++ $path)
-  def $path: Vector[Either[Int,String]] = path
+//  def $path: Vector[Either[Int,String]] = path
 }
 
 /*-------------------------------------------------------------------------------------------------------*/
