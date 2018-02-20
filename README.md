@@ -1,4 +1,4 @@
-# Jedi IO
+# Jedi Nodes
 
 ## Status
 [![Download](https://api.bintray.com/packages/raisercostin/maven/jedi-node/images/download.svg)](https://bintray.com/raisercostin/maven/jedi-node/_latestVersion)
@@ -9,6 +9,7 @@
 
 ## Description
 Scala (and java) fluent interface to json, xml, hocon, conf, properties, freemind.
+There is an `SNode` entity that is used as the common entity
 
 ## Features
 - A **node** should keep?
@@ -64,7 +65,7 @@ For more samples see [LocationsTest.scala](src/test/scala/org/raisercostin/util/
  resolvers += "raisercostin repository" at "http://dl.bintray.com/raisercostin/maven"
  ```
 
-# Development
+# Usage
 
 Projects that are using jedi-node:
  
@@ -80,3 +81,12 @@ Given a container and a key prefix another container should be returned with par
 A refereence to full key might be useful. A relativeKey concept might be useful?
 A save/load from hocon, yaml would be nice.
 A business wrapper around a Config should be easy to use.
+
+# Development
+
+ - to configure release
+   ```bintrayChangeCredentials```
+ - to publish current version with all scala versions (2.10,2.11,2.12):
+   ```+publish```
+ - to release
+   ```sbt> release skip-tests```
