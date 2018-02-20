@@ -1,12 +1,6 @@
 package org.raisercostin.namek.nodes;
 import org.raisercostin.jedi.InputLocation;
-import org.raisercostin.jedi.Locations;
 public class JNodes {
-  // def loadYaml(location: InputLocation): JNode = SNodes.loadYaml(location).get
-  // def loadJson(location: InputLocation): JNode = SNodes.loadJsonRapture(location).get
-  // def loadXml(location: InputLocation): JNode = SNodes.loadXml(location).get
-  // def loadXmlRapture(location: InputLocation): JNode = SNodes.loadXmlRapture(location).get
-  // def loadFreemind(location: InputLocation): JNode = SNodes.loadFreemind(location).get
   public static JNode parseYaml(String content) {
     return SNodes.parseYaml(content).get();
   }
@@ -17,6 +11,10 @@ public class JNodes {
 
   public static JNode parseXml(String content) {
     return SNodes.parseXml(content).get();
+  }
+
+  public static JNode parseXmlViaRapture(String content) {
+    return SNodes.parseXmlViaRapture(content).get();
   }
 
   public static JNode parseFreemind(String content) {
@@ -37,5 +35,9 @@ public class JNodes {
 
   public static JNode loadXml(InputLocation location) {
     return SNodes.loadXml(location).get();
+  }
+
+  public static JNode loadXmlViaRapture(InputLocation location) {
+    return SNodes.loadXmlViaRapture(location).get();
   }
 }

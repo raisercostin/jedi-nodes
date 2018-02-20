@@ -8,7 +8,7 @@
 <!--[![codecov.io](http://codecov.io/github/raisercostin/jedi-node/coverage.svg?branch=master)](http://codecov.io/github/raisercostin/jedi-node?branch=master)-->
 
 ## Description
-Scala uniform, fluent access to files, urls and other resources API. Fluent for java too.
+Scala (and java) fluent interface to json, xml, hocon, conf, properties, freemind.
 
 ## Features
 - A **node** should keep?

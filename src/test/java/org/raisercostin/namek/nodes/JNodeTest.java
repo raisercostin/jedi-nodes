@@ -20,7 +20,13 @@ public class JNodeTest {
 
   @Test
   public void testXml() {
-    JNode a = JNodes.parseXml("<key1>value1</key1>");
+    JNode a = JNodes.parseXml("<root1><key1>value1</key1></root1>");
+    testJNode(a);
+  }
+
+  @Test
+  public void testXmlViaRapture() {
+    JNode a = JNodes.parseXmlViaRapture("<root1><key1>value1</key1></root1>");
     testJNode(a);
   }
 
@@ -42,6 +48,10 @@ public class JNodeTest {
   private void testJNode(JNode node) {
     assertEquals("value1",node.child("key1").as(String.class));
     assertEquals("value1",node.child("key1").asString());
+    
+    //String exported = node.save();
+    //JNode node2 = node.parse(exported);
+    //assertEquals(node,node2);
     //System.out.println(node.as(Map<String,String>.class));
   }
 }

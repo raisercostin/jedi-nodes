@@ -1,6 +1,6 @@
 organization := "org.raisercostin"
-name := "jedi-data"
-description := "Scala fluent file utility library"
+name := "jedi-nodes"
+description := "Scala (and java) fluent interface to json, xml, hocon, conf, properties, freemind."
 homepage := Some(url(s"https://github.com/raisercostin/"+name.value))
 
 //scalaVersion := "2.10.6"
@@ -52,6 +52,8 @@ libraryDependencies += "org.json" % "json" % "20170516"
 //libraryDependencies += "com.propensive" %% "rapture-json-jackson" % "2.0.0-M8"
 libraryDependencies += "com.propensive" %% "rapture-json-spray" % "2.0.0-M8"
 libraryDependencies += "com.propensive" %% "rapture-xml-stdlib" % "2.0.0-M8"
+
+libraryDependencies += "com.typesafe" % "config" % "1.3.1"
 
 /*
 libraryDependencies +=
