@@ -3,14 +3,14 @@ package org.raisercostin.syaml
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.Assert._
-import org.raisercostin.namek.nodes.Nodes
-import org.raisercostin.namek.nodes.ANode
+import org.raisercostin.namek.nodes.SNodes
+import org.raisercostin.namek.nodes.SNode
 import scala.util.Try
 import rapture.json.Json
 
-class ANodeTest extends org.raisercostin.jedi.impl.SlfLogger {
+class SNodeTest extends org.raisercostin.jedi.impl.SlfLogger {
   @Test def parseNodeFromYaml() {
-    val all:ANode = Nodes.parseYaml("""
+    val all:SNode = SNodes.parseYaml("""
       something:
         child1:
           at1: value1
@@ -26,7 +26,7 @@ class ANodeTest extends org.raisercostin.jedi.impl.SlfLogger {
     //data(0).value.asInstanceOf[Throwable].printStackTrace()
   }
   @Test def parseNodeFromJsonViaRapture() {
-    val all:ANode = Nodes.parseJsonRapture("""
+    val all:SNode = SNodes.parseJson("""
       {  
    "something":{  
       "child1":[  

@@ -1,15 +1,12 @@
-package org.raisercostn.syaml
+package org.raisercostin.namek.nodes
 
-import scala.xml.Node
-import scala.util.Try
-import scala.xml.NodeSeq
 import org.raisercostin.jedi.OutputLocation
 import org.raisercostin.jedi.Locations
 import org.raisercostin.namek.nodes._
 import rapture.data.MutableCell
+import scala.Vector
 
-case class JavaXmlNode(val $root: MutableCell, val path: Vector[Either[Int, String]] = Vector()) extends SimpleANode with ANode {
-  def value: org.w3c.dom.Node = $root.value.asInstanceOf[org.w3c.dom.Node]
+case class JavaXmlNode(value:org.w3c.dom.Node) extends SimpleANode with SNode {
   import JavaXmlNode._
   import javax.xml.xpath.XPathFactory
   import org.w3c.dom.NodeList
@@ -23,13 +20,12 @@ case class JavaXmlNode(val $root: MutableCell, val path: Vector[Either[Int, Stri
   import javax.xml.xpath.XPathFactory
   val xPathfactory = XPathFactory.newInstance();
 
-  def queryOne(path: String): ANode = {
+  def queryOne(path: String): SNode = {
     val xpath = xPathfactory.newXPath()
     val expr = xpath.compile(path)
     val nl: NodeList = expr.evaluate(value, XPathConstants.NODESET).asInstanceOf[NodeList]
-    //val stream: Stream[ANode] = Stream.from(0, nl.getLength).map(i => JavaXmlNode(nl.item(i)))
-    //SimpleNodeList(stream)
-    ???
+    val stream: Stream[SNode] = Stream.from(0, nl.getLength).map(i => JavaXmlNode(nl.item(i)))
+    stream.head
   }
 //  override def queryOneList(path: NodeSelector): ANodeList = {
 //    val xpath = xPathfactory.newXPath()
@@ -38,7 +34,7 @@ case class JavaXmlNode(val $root: MutableCell, val path: Vector[Either[Int, Stri
 //    val stream: Stream[ANode] = Stream.from(0, nl.getLength).map(i => JavaXmlNode(nl.item(i)))
 //    SimpleNodeList(stream)
 //  }
-  override def child(key: String): ANode = queryOne("*")
+  override def child(key: String): SNode = queryOne(key)
   //override def children: ANode = queryOne("*")
   //override def id = value.Option(value.\@("id")).filter(_.nonEmpty).getOrElse(super.id)
   //  def child(key: NodeSelector): ANode = Try { one(value.\(key)) }.
@@ -68,8 +64,8 @@ case class JavaXmlNode(val $root: MutableCell, val path: Vector[Either[Int, Stri
     out.usingOutputStream(o => transformer.transform(new DOMSource(value),
       new StreamResult(new OutputStreamWriter(o, "UTF-8"))))
   }
-  def all: Stream[ANode] = ???
-
-  def $deref($path: Vector[Either[Int,String]]): ANode = ???//new MindMapJavaXmlNode(node.key,path ++ $path)
-  def $path: Vector[Either[Int,String]] = path
+  def all: Stream[SNode] = ???
+//
+//  def $deref($path: Vector[Either[Int,String]]): ANode = ???//new MindMapJavaXmlNode(node.key,path ++ $path)
+//  def $path: Vector[Either[Int,String]] = path
 }

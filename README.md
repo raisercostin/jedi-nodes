@@ -11,6 +11,31 @@
 Scala uniform, fluent access to files, urls and other resources API. Fluent for java too.
 
 ## Features
+- A **node** should keep?
+  - path to it?
+  - root?
+  - internal data?
+  - data including self?
+- add external formatters/parsers/connectors
+  - xml
+    - scala
+    - java
+  - json
+    - rapture
+  - freemind xml
+  - hocon
+    - typesafe config library
+  - java properties
+- add extractors (as visitors?)
+  - jquery/css selectors
+  - xpath
+- add schema validators
+  - xsd validator
+  - dtd validator
+  - json schema : http://json-schema.org/
+  - yaml schema
+    - http://doctrine.readthedocs.io/en/latest/en/manual/yaml-schema-files.html
+    - https://stackoverflow.com/questions/5060086/yaml-schema-validation
 
 # Usage
 ## Samples

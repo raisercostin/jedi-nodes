@@ -8,20 +8,20 @@ import org.raisercostin.jedi.Locations
 import rapture.json.Json
 import rapture.data.DynamicData
 import rapture.json.JsonAst
+import scala.reflect.runtime.{ universe => ru }
 
-object JavaNodes {
-  def loadYaml(location: InputLocation): JNode = Nodes.loadYaml(location).get
-  def loadJson(location: InputLocation): JNode = Nodes.loadJsonRapture(location).get
-}
-object Nodes {
+object SNodes {
+  def parseYaml(data: String): Try[SNode] = loadYaml(Locations.memory("a").writeContent(data))
+  def parseJson(data: String): Try[SNode] = loadJson(Locations.memory("a").writeContent(data))
+  def parseXml(data: String): Try[SNode] = loadXml(Locations.memory("a").writeContent(data))
+  def parseXmlViaRapture(data: String): Try[SNode] = loadXmlViaRapture(Locations.memory("a").writeContent(data))
+  def parseFreemind(data: String): Try[SNode] = loadFreemind(Locations.memory("a").writeContent(data))
+
   import rapture.data.MutableCell
-  def loadYaml(location: InputLocation): Try[ANode] = {
+  def loadYaml(location: InputLocation): Try[SNode] = {
     location.readContentAsText.map(x => Syaml.parse(x)(InputLocationSyamlSource(location))).map(x => SyamlANode(x))
   }
-  def parseYaml(data: String): Try[ANode] = loadYaml(Locations.memory("a").writeContent(data))
-
-  def parseJsonRapture(data: String): Try[ANode] = loadJsonRapture(Locations.memory("a").writeContent(data))
-  def loadJsonRapture(location: InputLocation): Try[ANode] = {
+  def loadJson(location: InputLocation): Try[SNode] = {
     import rapture.json._
     import rapture.core._
     import rapture.json.formatters.humanReadable._
@@ -31,24 +31,54 @@ object Nodes {
     import JodaAndJdkTimeConverters._
     location.readContentAsText.map(x => RaptureJsonANode(Json.parse(x)))
   }
-
-  //    override def write(items: Iterable[CalendarEvent]) = Try {
-  //      file.writeContent(Json.format(Json(items.toSeq)))
-  //    }
-  //    override def read(): Iterable[CalendarEvent] = {
-  //      file.readContentAsText.map(Json.parse(_).as[Seq[CalendarEvent]]).get
-  //    }
+  def loadXmlViaRapture(location: InputLocation): Try[SNode] = {
+    import rapture.xml._
+    import rapture.core._
+    //import rapture.xml.formatters.humanReadable._
+    //import rapture.xml.jsonBackends.spray._
+    import modes.returnTry
+    import JodaAndJdkTimeConverters.implicits._
+    import JodaAndJdkTimeConverters._
+    //location.readContentAsText.map(x => RaptureJsonANode(Xml.parse(x)))
+    ???
+  }
+  def loadXml(location: InputLocation): Try[SNode] = {
+    Try { JavaXmlNode(loadJavaXml(location)) }
+  }
+  def loadFreemind(location: InputLocation): Try[SNode] = {
+    Try { MindMapJavaXmlNode(JavaXmlNode(loadJavaXml(location))) }
+  }
+  private def loadJavaXml(file: InputLocation): org.w3c.dom.Document = {
+    import javax.xml.parsers.DocumentBuilderFactory
+    val docBuilderFactory = DocumentBuilderFactory.newInstance();
+    val docBuilder = docBuilderFactory.newDocumentBuilder();
+    file.usingInputStream(docBuilder.parse)
+  }
 }
 
 import scala.language.dynamics
-trait ANode extends Dynamic with JNode {
+trait SNode extends Dynamic with JNode {
   type NodeSelector = String
   type NodeId = String
   type ChildNodeType
-  def selectDynamic(key: String): ANode = child(key).asInstanceOf[ANode]
+  def selectDynamic(key: String): SNode = child(key).asInstanceOf[SNode]
+  def empty: Boolean = isFailure
+  def nonEmpty: Boolean = isSuccess
+  def isFailure: Boolean = !isSuccess
+  def isSuccess: Boolean = true
+  def id: NodeId = "@" + hashCode
 
   override def child(key: String): JNode
-  override def as[T](clazz: Class[T]): T = ???
+  import scala.reflect.runtime.{ universe => ru }
+  override def as[T](clazz: Class[T]): T = {
+    val t: ru.Type = getType(clazz)
+    as(t)
+  }
+  def getType[T](clazz: Class[T]): ru.Type = {
+    val runtimeMirror = ru.runtimeMirror(clazz.getClassLoader)
+    runtimeMirror.classSymbol(clazz).toType
+  }
+  def as[T](ruType: ru.Type): T = this.asInstanceOf[T]
 }
 
 import rapture.data.MutableCell
@@ -170,11 +200,11 @@ trait ANode2 extends DynamicData2 /* with DataType2 */ with JNode {
   type NodeSelector = String
   type NodeId = String
   //type T = ANode
-  def empty: Boolean = isFailure
-  def nonEmpty: Boolean = isSuccess
-  def isFailure: Boolean = !isSuccess
-  def isSuccess: Boolean = true
-  def id: NodeId = "@" + hashCode
+  //  def empty: Boolean = isFailure
+  //  def nonEmpty: Boolean = isSuccess
+  //  def isFailure: Boolean = !isSuccess
+  //  def isSuccess: Boolean = true
+  //  def id: NodeId = "@" + hashCode
   def query(path: NodeSelector): ANode2 = query(path.split("\\."): _*)
   def query(path: NodeSelector*): ANode2 = ???
   def queryOne(path: NodeSelector): ANode2 = ???
@@ -224,22 +254,26 @@ trait ANode2 extends DynamicData2 /* with DataType2 */ with JNode {
 //  }
 //  def all: Stream[ANode]
 //}
-case class ANodeError(val $root: MutableCell, val path: Vector[Either[Int, String]] = Vector()) extends ANode {
+case class ANodeError(ex: Throwable, val path: Vector[Either[Int, String]] = Vector()) extends SNode {
   type ChildNodeType = ANodeError
+  override def isSuccess: Boolean = false
   def child(key: String): ChildNodeType = this
-  def ex: Throwable = $root.value.asInstanceOf[Throwable]
+  //def ex: Throwable = $root.value.asInstanceOf[Throwable]
   //  override def id = "ANodeError" + hashCode()
   //  override def isSuccess: Boolean = false
   //override def query(path: NodeSelector*): ANode = this
   //  def child(key: NodeSelector): ANodeList = this
   //  def children: ANodeList = this
-  def all: Stream[ANode] = ???
+  def all: Stream[SNode] = ???
 
   //def $deref($path: scala.collection.immutable.Vector[scala.util.Either[Int,String]]): T = this
   def $path: Vector[Either[Int, String]] = path
+  override def as[T](t: ru.Type): T = {
+    this.asInstanceOf[T]
+  }
 }
 
-trait SimpleANode extends ANode {
+trait SimpleANode extends SNode {
   //  override def query(path: NodeSelector*): ANode = {
   //    path.foldLeft[ANode](this) {
   //      case (x: ANode, key) =>
@@ -258,7 +292,7 @@ trait SimpleANode extends ANode {
 //  def $path: Vector[Either[Int,String]] = ???
 //}
 
-case class SyamlANode(syaml: Syaml) extends ANode { self2 =>
+case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
   def child(key: String): SyamlANode = SyamlANode(syaml.selectDynamic(key))
   //def syaml: Syaml = $root.value.asInstanceOf[Syaml]
   //override type T = self2.type
@@ -266,10 +300,18 @@ case class SyamlANode(syaml: Syaml) extends ANode { self2 =>
   //  def children: ANodeList = new SimpleNodeList(syaml.children.toStream.map(new SyamlANode(_)))
   //def $deref($path: Vector[Either[Int,String]]): ANode = new SyamlANode($root,path ++ $path)
   //def $path: Vector[Either[Int,String]] = path
+  override def as[T](t: ru.Type): T = {
+    t match {
+      case t if t =:= ru.typeOf[String] =>
+        syaml.value.asInstanceOf[T]
+      case _ =>
+        ???
+    }
+  }
 }
 
-case class RaptureJsonANode(json: Json) extends ANode {
-  def child(key: String): ANode = RaptureJsonANode(json.selectDynamic(key))
+case class RaptureJsonANode(json: Json) extends SNode {
+  def child(key: String): SNode = RaptureJsonANode(json.selectDynamic(key))
   //def json:Json = $root.value.asInstanceOf[Json]
   //override type T = RaptureJsonANode
   //  def $deref($path: Vector[Either[Int, String]]): RaptureJsonANode = {
@@ -293,40 +335,19 @@ case class RaptureJsonANode(json: Json) extends ANode {
   //  }
   //override def $root: rapture.data.MutableCell = MutableCell(node)
   //def $wrap(any: Any,$path: Vector[Either[Int,String]]): ANode = ???
-  import scala.reflect.runtime.universe._
-  override def as[T](clazz: Class[T]): T = {
-    import scala.reflect.runtime.universe._
-    val t: Type = getType(clazz)
+  //import scala.reflect.runtime.universe._
+  override def as[T](t: ru.Type): T = {
+    import rapture.data.Extractor
     t match {
-      case t if t =:= typeOf[String] =>
+      case t if t =:= ru.typeOf[String] =>
         as2[String].asInstanceOf[T]
       case _ =>
         ???
     }
-    //    println(s"convert $this to ${clazz}")
-    //    import rapture.json._
-    //    import rapture.core._
-    //    import rapture.json.formatters.humanReadable._
-    //    import rapture.json.jsonBackends.spray._
-    //    import modes.returnTry
-    //    import JodaAndJdkTimeConverters.implicits._
-    //    import JodaAndJdkTimeConverters._
-    //    import rapture.core.modes.returnTry
-    //    //as2[T]
-    //    //as2[String]
-    //    val ext = implicitly[Extractor[T,Json]]
-    //    ???
-    //
   }
-  import scala.reflect.runtime.{ universe => ru }
-  def getType[T](clazz: Class[T]): ru.Type = {
-    val runtimeMirror = ru.runtimeMirror(clazz.getClassLoader)
-    runtimeMirror.classSymbol(clazz).toType
-  }
-  import rapture.data.Extractor
 
+  import rapture.data.Extractor
   def as2[T](implicit ext: Extractor[T, Json]): T = {
-    //def as2[T](implicit clazz:ClassTag[T]):T = {
     import rapture.core.modes.returnTry
     import rapture.json._
     import rapture.core._
@@ -335,13 +356,75 @@ case class RaptureJsonANode(json: Json) extends ANode {
     import modes.returnTry
     import JodaAndJdkTimeConverters.implicits._
     import JodaAndJdkTimeConverters._
-    import rapture.core.modes.returnTry
+    //    import rapture.core.modes.returnTry
     //json.child("","")
     //println("c2="+$extract(path).asInstanceOf[RaptureJsonANode].json)
     //$extract(path).asInstanceOf[RaptureJsonANode].json.as[String]
     //$extract(path).asInstanceOf[RaptureJsonANode].json.asInstanceOf[T]
     //val ext = implicitly(rapture.data.Extractor[String,Json])
-    println(json)
+    //println(json)
     json.as[T]
   }
+}
+
+object AllExtractors {
+  private case object NoConversion extends (Any => Nothing) {
+    def apply(x: Any) = sys.error("No conversion")
+  }
+
+  // Just for convenience so NoConversion does not escape the scope.
+  private def noConversion: Any => Nothing = NoConversion
+
+  // and now some convenience methods that can be safely exposed:
+
+  def canConvert[A, B]()(implicit f: A => B = noConversion) =
+    (f ne NoConversion)
+
+  def tryConvert[A, B](a: A)(implicit f: A => B = noConversion): Either[A, B] =
+    if (f eq NoConversion) Left(a) else Right(f(a))
+
+  def optConvert[A, B](a: A)(implicit f: A => B = noConversion): Option[B] =
+    if (f ne NoConversion) Some(f(a)) else None
+  //  import rapture.data.Extractor
+  //  //def extract(ext: Extractor[T, D]) = ???
+  //  def as[T](t: ru.Type): T = {
+  //    import rapture.data.Extractor
+  //    t match {
+  //      case t if t =:= ru.typeOf[String] =>
+  //        ??? //as2[String].asInstanceOf[T]
+  //      case _ =>
+  //        ???
+  //    }
+  //  }
+}
+
+import scala.xml.Node
+import scala.util.Try
+import scala.xml.NodeSeq
+import org.raisercostin.jedi.OutputLocation
+import org.raisercostin.jedi.Locations
+import org.raisercostin.namek.nodes._
+import rapture.data.MutableCell
+
+/*-------------------------------------------------------------------------------------------------------*/
+@deprecated("too simple xpath selections")
+case class ScalaElemNode(value: Node) extends SimpleANode with SNode {
+  //  override def id = Option(value.\@("id")).filter(_.nonEmpty).getOrElse(super.id)
+  override def child(key: NodeSelector): SNode = Try { one(value.\(key)) }.
+    map(x => ScalaElemNode(x)).recover { case x: Throwable => ANodeError(new IllegalArgumentException(s"When searching for child [$key]: " + x.getMessage, x)) }.get
+  //override def asStream: Stream[ANode] = value.\\("_").toStream.map(x => ScalaElemNode(x))
+
+  private def one(seq: NodeSeq): Node = seq match {
+    case a: NodeSeq if a.length == 1 => a.head
+    case a: NodeSeq if a.length == 0 => throw new IllegalArgumentException(s"No child node.")
+    case a: NodeSeq if a.length > 1  => throw new IllegalArgumentException(s"There are multiple child nodes.")
+  }
+}
+
+/*-------------------------------------------------------------------------------------------------------*/
+
+/*-------------------------------------------------------------------------------------------------------*/
+case class MindMapJavaXmlNode(node: JavaXmlNode) extends SimpleANode with SNode {
+  override def child(key: String): SNode = MindMapJavaXmlNode(node.queryOne("//node[@TEXT='" + key + "']").asInstanceOf[JavaXmlNode])
+  def all: Stream[SNode] = ???
 }
