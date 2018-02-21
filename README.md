@@ -1,11 +1,11 @@
 # Jedi Nodes
 
 ## Status
-[![Download](https://api.bintray.com/packages/raisercostin/maven/jedi-node/images/download.svg)](https://bintray.com/raisercostin/maven/jedi-node/_latestVersion)
+[![Download](https://api.bintray.com/packages/raisercostin/maven/jedi-nodes/images/download.svg)](https://bintray.com/raisercostin/maven/jedi-nodes/_latestVersion)
 [![Build Status](https://travis-ci.org/raisercostin/jedi-node.svg?branch=master)](https://travis-ci.org/raisercostin/jedi-node)
 [![Codacy Badge](https://www.codacy.com/project/badge/5cc4b6b21f694317ab8beec05342c7b5)](https://www.codacy.com/app/raisercostin/jedi-node)
-[![codecov](https://codecov.io/gh/raisercostin/jedi-node/branch/master/graph/badge.svg)](https://codecov.io/gh/raisercostin/jedi-node)
-<!--[![codecov.io](http://codecov.io/github/raisercostin/jedi-node/coverage.svg?branch=master)](http://codecov.io/github/raisercostin/jedi-node?branch=master)-->
+[![codecov](https://codecov.io/gh/raisercostin/jedi-nodes/branch/master/graph/badge.svg)](https://codecov.io/gh/raisercostin/jedi-node)
+<!--[![codecov.io](http://codecov.io/github/raisercostin/jedi-nodes/coverage.svg?branch=master)](http://codecov.io/github/raisercostin/jedi-node?branch=master)-->
 
 ## Description
 Scala (and java) fluent interface to json, xml, hocon, conf, properties, freemind.
