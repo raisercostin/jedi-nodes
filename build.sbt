@@ -33,7 +33,7 @@ libraryDependencies ++= Seq(
 	         ,ExclusionRule(organization="javax.activation", name="activation")
 	        )
 	, "com.sun.mail" % "javax.mail" % "1.5.5"
-    ,"org.raisercostin" %% "jedi-io" % "0.58"
+    ,"org.raisercostin" %% "jedi-io" % "0.59"
     
     //syaml
     ,"org.yaml" % "snakeyaml" % "1.17"

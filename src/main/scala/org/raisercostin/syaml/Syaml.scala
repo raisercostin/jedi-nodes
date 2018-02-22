@@ -10,6 +10,13 @@ import org.joda.time.DateTime
 import scala.collection.Seq
 import scala.util.Success
 import scala.collection.immutable.ListMap
+import scala.language.dynamics
+import org.raisercostin.syaml.Syaml.WrappedMap
+import org.raisercostin.jedi.InputLocation
+import org.raisercostin.jedi.Locations
+import org.raisercostin.jedi.impl.SlfLogger
+import scala.runtime.ScalaRunTime
+import scala.collection.mutable.LinkedHashMap
 
 object Syaml extends org.raisercostin.jedi.impl.SlfLogger {
   type WrappedMap[K, V] = ListMap[K, V]
@@ -19,6 +26,8 @@ object Syaml extends org.raisercostin.jedi.impl.SlfLogger {
     original match {
       case m: WrappedMap[AnyRef, _] =>
         SyamlMap(m)
+      case m: LinkedHashMap[AnyRef, _] =>
+        SyamlMap(ListMap() ++ m)
       case l: Seq[AnyRef] =>
         SyamlList(l)
       case (x, y) =>
@@ -70,14 +79,6 @@ object Syaml extends org.raisercostin.jedi.impl.SlfLogger {
     Syaml(yamlToScala(new org.yaml.snakeyaml.Yaml().load(yaml)))
   }
 }
-import scala.language.dynamics
-import org.raisercostin.syaml.Syaml.WrappedMap
-import org.raisercostin.jedi.InputLocation
-import org.raisercostin.jedi.Locations
-import org.raisercostin.jedi.impl.SlfLogger
-import org.raisercostin.jedi.impl.SlfLogger
-import org.raisercostin.jedi.impl.SlfLogger
-import scala.runtime.ScalaRunTime
 
 //case class DynamicSyaml(f: Syaml) {
 //  def selectDynamic(name: String): DynamicSyaml = DynamicSyaml(f.get(name))
@@ -139,6 +140,7 @@ trait Syaml extends org.raisercostin.jedi.impl.SlfLogger with Dynamic with Itera
   def as[T](implicit ct: ClassTag[T]): Try[T] = Try { value.asInstanceOf[T] }
   def asSyamlPair: SyamlPair = this.asInstanceOf[SyamlPair]
   def asSyamlMap: SyamlMap = this.asInstanceOf[SyamlMap]
+  def get = this
 
   //extract value
   def value: Any
@@ -250,4 +252,5 @@ case class SyamlError(error: Throwable)(implicit val source: SyamlSource) extend
   override def children: Iterable[Syaml] = Seq()
   override def as[T](implicit ct: ClassTag[T]): Try[T] = Failure{error}
   override def toString: String = ScalaRunTime._toString(this)
+  override def get = throw error
 }

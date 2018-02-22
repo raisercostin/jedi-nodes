@@ -70,6 +70,7 @@ For more samples see [LocationsTest.scala](src/test/scala/org/raisercostin/util/
 Projects that are using jedi-node:
  
 ## Backlog
+- see HierarchicalMultimap in jedi-io
 
 ### 2018-02-019 - Create Nodes abstraction
 

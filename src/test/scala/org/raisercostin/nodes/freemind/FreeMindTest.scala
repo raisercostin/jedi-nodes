@@ -16,7 +16,8 @@ class FreeMind2SyamlTest extends SlfLogger{
     assertEquals("", data.query("data.menu").isSuccess)
   }
   @Test def readMindMapAsObject() {
-    val data: Syaml = FreeMindAsObject.load(Locations.classpath("data.mm")).get
+    val data: Syaml = FreeMindAsObject.load(Locations.classpath("data.mm")).get.get
+    println(data)
     assertEquals("org.raisercostin.syaml.SyamlMap", data.getClass().getName)
     //println(data.asMap.get.mkString("\n"))
     logger.debug(data.toString)
