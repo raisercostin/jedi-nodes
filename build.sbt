@@ -57,6 +57,9 @@ libraryDependencies += "com.propensive" %% "rapture-xml-stdlib" % "2.0.0-M8"
 //libraryDependencies += "com.voxsupplychain" %% "json-schema-parser" % "0.12.1"
 libraryDependencies += "com.networknt" % "json-schema-validator" % "0.1.7"
 
+//utils:yaml
+libraryDependencies += "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % "2.9.4"
+
 libraryDependencies += "com.typesafe" % "config" % "1.3.1"
 
 resolvers += "raisercostin resolver" at "http://dl.bintray.com/raisercostin/maven"

@@ -3,18 +3,25 @@ package org.raisercostin.namek.nodes;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.raisercostin.jedi.Locations;
 
 public class JNodeTest {
 
   @Test
   public void testYaml() {
     JNode a = JNodes.parseYaml("key1 : value1\nkey2 : value2");
+    JNode b = JNodes.yamlToJson(a);
+    JNodeValidator schema = JsonNodeValidator.fromLocation(Locations.classpath("schema1.json"));
+    b.validate(schema);
+    JNodeValidator yamlSchemaValidator = YamlNodeValidator.from(JsonNodeValidator.fromLocation(Locations.classpath("schema1.json")));
+    a.validate(yamlSchemaValidator);
     testJNode(a);
   }
 
   @Test
   public void testJson() {
-    JNode a = JNodes.parseJson("{'key1' : 'value1', 'key2' : 'value2'}".replaceAll("'","\""));
+    RaptureJsonANode a = JNodes.parseJson("{'key1' : 'value1', 'key2' : 'value2'}".replaceAll("'","\""));
+    a.validate(JsonNodeValidator.fromLocation(Locations.classpath("schema1.json")));
     testJNode(a);
   }
 

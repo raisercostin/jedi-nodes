@@ -1,49 +1,48 @@
 package org.raisercostin.namek.nodes
 
-import org.raisercostin.jedi.InputLocation
-import org.raisercostin.syaml.Syaml
-import scala.util.Try
-import org.raisercostin.syaml.InputLocationSyamlSource
-import org.raisercostin.jedi.Locations
-import rapture.json.Json
-import rapture.data.DynamicData
-import rapture.json.JsonAst
 import scala.reflect.runtime.{ universe => ru }
+import scala.util.Try
+import scala.xml.Node
+import scala.xml.NodeSeq
+
+import org.raisercostin.jedi.InputLocation
+import org.raisercostin.jedi.Locations
+import org.raisercostin.syaml.InputLocationSyamlSource
+import org.raisercostin.syaml.Syaml
+
+import com.networknt.schema.JsonSchema
+import com.networknt.schema.JsonSchemaFactory
+
+import rapture.json.Json
 import rapture.xml.Xml
+import scala.language.dynamics
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 
 object SNodes {
   def parseYaml(data: String): Try[SNode] = loadYaml(Locations.memory("a").writeContent(data))
-  def parseJson(data: String): Try[SNode] = loadJson(Locations.memory("a").writeContent(data))
+  def parseJson(data: String): Try[RaptureJsonANode] = loadJson(Locations.memory("a").writeContent(data))
   def parseXml(data: String): Try[SNode] = parseXmlViaRapture(data)
   def parseXmlViaRapture(data: String): Try[SNode] = loadXmlViaRapture(Locations.memory("a").writeContent(data))
   def parseXmlViaJava(data: String): Try[SNode] = loadXmlViaJava(Locations.memory("a").writeContent(data))
   def parseXmlViaScala(data: String): Try[SNode] = loadXmlViaRapture(Locations.memory("a").writeContent(data))
   def parseFreemind(data: String): Try[SNode] = loadFreemind(Locations.memory("a").writeContent(data))
 
-  import rapture.data.MutableCell
   def loadYaml(location: InputLocation): Try[SNode] = {
     location.readContentAsText.map(x => Syaml.parse(x)(InputLocationSyamlSource(location))).map(x => SyamlANode(x))
   }
-  def loadJson(location: InputLocation): Try[SNode] = {
-    import rapture.json._
+  def loadJson(location: InputLocation): Try[RaptureJsonANode] = {
     import rapture.core._
-    import rapture.json.formatters.humanReadable._
+    import rapture.json._
     import rapture.json.jsonBackends.spray._
-    import modes.returnTry
-    import JodaAndJdkTimeConverters.implicits._
-    import JodaAndJdkTimeConverters._
     location.readContentAsText.map(x => RaptureJsonANode(Json.parse(x)))
   }
   def loadXml(location: InputLocation): Try[SNode] = loadXmlViaRapture(location)
   def loadXmlViaRapture(location: InputLocation): Try[SNode] = {
-    import rapture.xml._
     import rapture.core._
-    import xmlBackends.stdlib._
-    //import rapture.xml.formatters.humanReadable._
-    //import rapture.xml.jsonBackends.spray._
-    import modes.returnTry
-    import JodaAndJdkTimeConverters.implicits._
-    import JodaAndJdkTimeConverters._
+    import rapture.xml._
+    import rapture.xml.xmlBackends.stdlib._
     //location.readContentAsText.map(x => RaptureJsonANode(Xml.parse(x)))
     location.readContentAsText.map(x => RaptureXmlNode(Xml.parse(x)))
   }
@@ -66,9 +65,18 @@ object SNodes {
     val content = file.readContent
     scala.xml.XML.loadString(content)
   }
+
+  def yamlToJson(node: JNode): Try[RaptureJsonANode] = {
+    val yamlReader = new ObjectMapper(new YAMLFactory())
+    val obj = yamlReader.readValue(node.asInstanceOf[SyamlANode].syaml.toYamlString, classOf[Object])
+    val jsonWriter = new ObjectMapper()
+    val jsonString = jsonWriter.writeValueAsString(obj)
+    parseJson(jsonString)
+  }
 }
 
-import scala.language.dynamics
+import com.fasterxml.jackson.databind.ObjectMapper
+
 trait SNode extends Dynamic with JNode {
   //type NodeSelector = String
   //type NodeId = String
@@ -78,10 +86,9 @@ trait SNode extends Dynamic with JNode {
   def nonEmpty: Boolean = isSuccess
   def isFailure: Boolean = !isSuccess
   def isSuccess: Boolean = true
-  def id: String/*NodeId*/ = "@" + hashCode
+  def id: String /*NodeId*/ = "@" + hashCode
 
   override def child(key: String): SNode
-  import scala.reflect.runtime.{ universe => ru }
   override def as[T](clazz: Class[T]): T = {
     val t: ru.Type = getType(clazz)
     as(t)
@@ -91,7 +98,7 @@ trait SNode extends Dynamic with JNode {
     runtimeMirror.classSymbol(clazz).toType
   }
   def as[T](ruType: ru.Type): T = this.asInstanceOf[T]
-  def query(path: String/*NodeSelector*/*): SNode = {
+  def query(path: String /*NodeSelector*/ *): SNode = {
     path.foldLeft[SNode](this) {
       case (x: SNode, key) =>
         println("search " + key + " on " + x.id)
@@ -333,7 +340,6 @@ case class RaptureXmlNode(xml: rapture.xml.Xml) extends SNode {
   println(s"loaded $this")
   def child(key: String): SNode = RaptureXmlNode(xml.selectDynamic(key))
   override def as[T](t: ru.Type): T = {
-    import rapture.data.Extractor
     t match {
       case t if t =:= ru.typeOf[String] =>
         implicit val intExt = Xml.extractor[String].map(_.toInt)
@@ -347,14 +353,8 @@ case class RaptureXmlNode(xml: rapture.xml.Xml) extends SNode {
 
   import rapture.data.Extractor
   def as2[T](implicit ext: Extractor[T, rapture.xml.Xml]): T = {
-    import rapture.core.modes.returnTry
-    import rapture.json._
     import rapture.core._
-    import rapture.json.formatters.humanReadable._
-    import rapture.json.jsonBackends.spray._
-    import modes.returnTry
-    import JodaAndJdkTimeConverters.implicits._
-    import JodaAndJdkTimeConverters._
+    import rapture.json._
     //    import rapture.core.modes.returnTry
     //json.child("","")
     //println("c2="+$extract(path).asInstanceOf[RaptureJsonANode].json)
@@ -365,28 +365,47 @@ case class RaptureXmlNode(xml: rapture.xml.Xml) extends SNode {
     xml.as[T]
   }
 }
-
-case class RaptureJsonANode(json: Json) extends SNode {
-  override def getDefaultValidator():JNodeValidator = new JNodeValidator{
-      def parse(s: String) = JsonSchemaParser.parse(s).validation
-
-    def validate(node:JNode) = {
-      import json.schema.parser.JsonSchemaParser
-      val schema = JsonSchemaParser.parse(new java.net.URI("http://json-schema.org/calendar"))
-      //val schema = getJsonSchemaFromStringContent("{\"enum\":[1, 2, 3, 4],\"enumErrorCode\":\"Not in the list\"}");
-      
-
-      ???
-    }
-    
-//    protected def getJsonSchemaFromStringContent(String schemaContent):JsonSchema throws Exception {
-//        JsonSchemaFactory factory = new JsonSchemaFactory();
-//        JsonSchema schema = factory.getSchema(schemaContent);
-//        return schema;
-//    }
+object YamlNodeValidator{
+  def from(jsonValidator:JsonNodeValidator):YamlNodeValidator = YamlNodeValidator(jsonValidator) 
+}
+case class YamlNodeValidator(jsonValidator:JsonNodeValidator) extends JNodeValidator {
+  def validate(node: JNode) =
+    jsonValidator.validate(SNodes.yamlToJson(node.asInstanceOf[SyamlANode]).get)
+}
+/**
+ * Json Schema validation as defined at http://json-schema.org . Using the https://github.com/networknt/json-schema-validator library.
+ */
+object JsonNodeValidator {
+  val factory = new JsonSchemaFactory()
+  def fromString(schema: String): JsonNodeValidator = {
+    JsonNodeValidator(factory.getSchema(schema))
   }
 
-  
+  //val schema = getJsonSchemaFromUrl("http://json-schema.org/calendar");
+  def fromUrl(url: String): JsonNodeValidator = {
+    JsonNodeValidator(factory.getSchema(new java.net.URL(url)))
+  }
+
+  def fromLocation(inputLocation: InputLocation): JsonNodeValidator = {
+    JsonNodeValidator(inputLocation.usingInputStream(factory.getSchema))
+  }
+}
+case class JsonNodeValidator(schema: JsonSchema) extends JNodeValidator {
+  def validate(node: JNode) = {
+    val result = schema.validate(getJsonNodeFromStringContent(node.asInstanceOf[RaptureJsonANode].json.toBareString))
+    if (!result.isEmpty())
+      throw new RuntimeException("Node invalid: " + result)
+  }
+
+  def getJsonNodeFromStringContent(content: String): JsonNode = {
+    val mapper = new ObjectMapper()
+    val result = mapper.readTree(content)
+    println(result)
+    result
+  }
+}
+
+case class RaptureJsonANode(json: Json) extends SNode {
   def child(key: String): SNode = RaptureJsonANode(json.selectDynamic(key))
   //def json:Json = $root.value.asInstanceOf[Json]
   //override type T = RaptureJsonANode
@@ -413,7 +432,6 @@ case class RaptureJsonANode(json: Json) extends SNode {
   //def $wrap(any: Any,$path: Vector[Either[Int,String]]): ANode = ???
   //import scala.reflect.runtime.universe._
   override def as[T](t: ru.Type): T = {
-    import rapture.data.Extractor
     t match {
       case t if t =:= ru.typeOf[String] =>
         as2[String].asInstanceOf[T]
@@ -424,14 +442,8 @@ case class RaptureJsonANode(json: Json) extends SNode {
 
   import rapture.data.Extractor
   def as2[T](implicit ext: Extractor[T, Json]): T = {
-    import rapture.core.modes.returnTry
-    import rapture.json._
     import rapture.core._
-    import rapture.json.formatters.humanReadable._
-    import rapture.json.jsonBackends.spray._
-    import modes.returnTry
-    import JodaAndJdkTimeConverters.implicits._
-    import JodaAndJdkTimeConverters._
+    import rapture.json._
     //    import rapture.core.modes.returnTry
     //json.child("","")
     //println("c2="+$extract(path).asInstanceOf[RaptureJsonANode].json)
@@ -474,21 +486,11 @@ object AllExtractors {
   //  }
 }
 
-import scala.xml.Node
-import scala.util.Try
-import scala.xml.NodeSeq
-import org.raisercostin.jedi.OutputLocation
-import org.raisercostin.jedi.Locations
-import org.raisercostin.namek.nodes._
-import rapture.data.MutableCell
-import rapture.xml.Xml
-import json.schema.parser.JsonSchemaParser
-
 /*-------------------------------------------------------------------------------------------------------*/
 @deprecated("too simple xpath selections")
 case class ScalaElemNode(value: Node) extends SimpleANode with SNode {
   //  override def id = Option(value.\@("id")).filter(_.nonEmpty).getOrElse(super.id)
-  override def child(key: String/*NodeSelector*/): SNode = Try { one(value.\(key)) }.
+  override def child(key: String /*NodeSelector*/ ): SNode = Try { one(value.\(key)) }.
     map(x => ScalaElemNode(x)).recover { case x: Throwable => ANodeError(new IllegalArgumentException(s"When searching for child [$key]: " + x.getMessage, x)) }.get
   //override def asStream: Stream[ANode] = value.\\("_").toStream.map(x => ScalaElemNode(x))
 

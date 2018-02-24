@@ -5,7 +5,7 @@ public class JNodes {
     return SNodes.parseYaml(content).get();
   }
 
-  public static JNode parseJson(String content) {
+  public static RaptureJsonANode parseJson(String content) {
     return SNodes.parseJson(content).get();
   }
 
@@ -39,5 +39,9 @@ public class JNodes {
 
   public static JNode loadXmlViaRapture(InputLocation location) {
     return SNodes.loadXmlViaRapture(location).get();
+  }
+  
+  public static RaptureJsonANode yamlToJson(JNode node) {
+     return SNodes.yamlToJson(node).get();
   }
 }

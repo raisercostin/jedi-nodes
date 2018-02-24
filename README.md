@@ -31,12 +31,16 @@ There is an `SNode` entity that is used as the common entity
   - jquery/css selectors
   - xpath
 - add schema validators
+  - general schemas: https://json-schema-everywhere.github.io/yaml
   - xsd validator
   - dtd validator
-  - json schema : http://json-schema.org/
+  - json schema
+    - http://json-schema.org/
   - yaml schema
+    - best to reuse json schema
     - http://doctrine.readthedocs.io/en/latest/en/manual/yaml-schema-files.html
     - https://stackoverflow.com/questions/5060086/yaml-schema-validation
+    - https://json-schema-everywhere.github.io/yaml
 
 # Usage
 ## Samples
@@ -72,9 +76,6 @@ Projects that are using jedi-node:
 ## Backlog
 - see HierarchicalMultimap in jedi-io
 
-### 2018-02-019 - Create Nodes abstraction
-
-
 ## Hierarchical Map
 A container of keys in form a.b.c is needed.
 The value could be multivalue eventually typed : Seq(value1,value2,value3).
@@ -91,3 +92,11 @@ A business wrapper around a Config should be easy to use.
    ```+publish```
  - to release
    ```sbt> release skip-tests```
+
+# History
+### 2018-02-19
+- Create Nodes abstraction
+
+### 2018-02-25
+- Add JSON and YAML validators 
+   
