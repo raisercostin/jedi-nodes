@@ -70,15 +70,15 @@ object SNodes {
 
 import scala.language.dynamics
 trait SNode extends Dynamic with JNode {
-  type NodeSelector = String
-  type NodeId = String
-  type ChildNodeType
+  //type NodeSelector = String
+  //type NodeId = String
+  //type ChildNodeType
   def selectDynamic(key: String): SNode = child(key).asInstanceOf[SNode]
   def empty: Boolean = isFailure
   def nonEmpty: Boolean = isSuccess
   def isFailure: Boolean = !isSuccess
   def isSuccess: Boolean = true
-  def id: NodeId = "@" + hashCode
+  def id: String/*NodeId*/ = "@" + hashCode
 
   override def child(key: String): SNode
   import scala.reflect.runtime.{ universe => ru }
@@ -91,7 +91,7 @@ trait SNode extends Dynamic with JNode {
     runtimeMirror.classSymbol(clazz).toType
   }
   def as[T](ruType: ru.Type): T = this.asInstanceOf[T]
-  def query(path: NodeSelector*): SNode = {
+  def query(path: String/*NodeSelector*/*): SNode = {
     path.foldLeft[SNode](this) {
       case (x: SNode, key) =>
         println("search " + key + " on " + x.id)
@@ -274,9 +274,9 @@ trait SNode extends Dynamic with JNode {
 //  def all: Stream[ANode]
 //}
 case class ANodeError(ex: Throwable, val path: Vector[Either[Int, String]] = Vector()) extends SNode {
-  type ChildNodeType = ANodeError
+  //type ChildNodeType = ANodeError
   override def isSuccess: Boolean = false
-  def child(key: String): ChildNodeType = this
+  def child(key: String): ANodeError = this
   //def ex: Throwable = $root.value.asInstanceOf[Throwable]
   //  override def id = "ANodeError" + hashCode()
   //  override def isSuccess: Boolean = false
@@ -365,7 +365,28 @@ case class RaptureXmlNode(xml: rapture.xml.Xml) extends SNode {
     xml.as[T]
   }
 }
+
 case class RaptureJsonANode(json: Json) extends SNode {
+  override def getDefaultValidator():JNodeValidator = new JNodeValidator{
+      def parse(s: String) = JsonSchemaParser.parse(s).validation
+
+    def validate(node:JNode) = {
+      import json.schema.parser.JsonSchemaParser
+      val schema = JsonSchemaParser.parse(new java.net.URI("http://json-schema.org/calendar"))
+      //val schema = getJsonSchemaFromStringContent("{\"enum\":[1, 2, 3, 4],\"enumErrorCode\":\"Not in the list\"}");
+      
+
+      ???
+    }
+    
+//    protected def getJsonSchemaFromStringContent(String schemaContent):JsonSchema throws Exception {
+//        JsonSchemaFactory factory = new JsonSchemaFactory();
+//        JsonSchema schema = factory.getSchema(schemaContent);
+//        return schema;
+//    }
+  }
+
+  
   def child(key: String): SNode = RaptureJsonANode(json.selectDynamic(key))
   //def json:Json = $root.value.asInstanceOf[Json]
   //override type T = RaptureJsonANode
@@ -461,12 +482,13 @@ import org.raisercostin.jedi.Locations
 import org.raisercostin.namek.nodes._
 import rapture.data.MutableCell
 import rapture.xml.Xml
+import json.schema.parser.JsonSchemaParser
 
 /*-------------------------------------------------------------------------------------------------------*/
 @deprecated("too simple xpath selections")
 case class ScalaElemNode(value: Node) extends SimpleANode with SNode {
   //  override def id = Option(value.\@("id")).filter(_.nonEmpty).getOrElse(super.id)
-  override def child(key: NodeSelector): SNode = Try { one(value.\(key)) }.
+  override def child(key: String/*NodeSelector*/): SNode = Try { one(value.\(key)) }.
     map(x => ScalaElemNode(x)).recover { case x: Throwable => ANodeError(new IllegalArgumentException(s"When searching for child [$key]: " + x.getMessage, x)) }.get
   //override def asStream: Stream[ANode] = value.\\("_").toStream.map(x => ScalaElemNode(x))
 

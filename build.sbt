@@ -53,8 +53,14 @@ libraryDependencies += "org.json" % "json" % "20170516"
 //libraryDependencies += "com.propensive" %% "rapture-json-jackson" % "2.0.0-M8"
 libraryDependencies += "com.propensive" %% "rapture-json-spray" % "2.0.0-M8"
 libraryDependencies += "com.propensive" %% "rapture-xml-stdlib" % "2.0.0-M8"
+//resolvers += "releases" at "http://nexus.tundra.com/repository/maven-releases/"
+//libraryDependencies += "com.voxsupplychain" %% "json-schema-parser" % "0.12.1"
+libraryDependencies += "com.networknt" % "json-schema-validator" % "0.1.7"
 
 libraryDependencies += "com.typesafe" % "config" % "1.3.1"
+
+resolvers += "raisercostin resolver" at "http://dl.bintray.com/raisercostin/maven"
+
 
 /*
 libraryDependencies +=
@@ -122,7 +128,6 @@ libraryDependencies +=
 // This is an example.  bintray-sbt requires licenses to be specified
 // (using a canonical name).
 licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html"))
-resolvers += "raisercostin resolver" at "http://dl.bintray.com/raisercostin/maven"
 
 pomExtra := (
   <scm>

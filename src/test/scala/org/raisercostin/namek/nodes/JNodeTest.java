@@ -48,6 +48,7 @@ public class JNodeTest {
   private void testJNode(JNode node) {
     assertEquals("value1",node.child("key1").as(String.class));
     assertEquals("value1",node.child("key1").asString());
+    node.validate();
     
     //String exported = node.save();
     //JNode node2 = node.parse(exported);
