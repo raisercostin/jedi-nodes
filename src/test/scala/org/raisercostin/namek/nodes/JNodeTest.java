@@ -12,7 +12,7 @@ public class JNodeTest {
 
   @Test
   public void testYaml() {
-    JNode a = JNodes.parseYaml("key1 : value1\nkey2 : value2");
+    JNode a = JNodes.parseYamlViaSyaml("key1 : value1\nkey2 : value2");
     JNode b = JNodes.yamlToJson(a);
     JNodeValidator schema = JsonNodeValidator.fromLocation(Locations.classpath("schema1.json"));
     b.validate(schema);
@@ -23,14 +23,31 @@ public class JNodeTest {
   @Rule
   public final ExpectedException exception = ExpectedException.none();
   @Test
-  public void testInvalidYaml() {
-    JNode a = JNodes.loadYaml(Locations.classpath("test1-valid.yaml"));
+  public void testValidYamlViaSyaml() {
+    JNode a = JNodes.loadYamlViaSyaml(Locations.classpath("test1-valid.yaml"));
     //assertEquals("SyamlANode(SyamlMap(SyamlPair(key1,Animals are: dogs, cats)))",a.toString());
     assertEquals("SyamlANode(SyamlMap(Map(key1 -> Animals are: dogs, cats)))",a.toString());
+  }
+  @Test
+  public void testInvalidYamlViaSyaml() {
     exception.expect(RuntimeException.class);
     exception.expectMessage("mapping values are not allowed here");
     exception.expectMessage("key1");
-    JNode b = JNodes.loadYaml(Locations.classpath("test1-invalid.yaml"));
+    JNode b = JNodes.loadYamlViaSyaml(Locations.classpath("test1-invalid.yaml"));
+    assertEquals("",b.asString());
+  }
+  @Test
+  public void testValidYamlViaJson() {
+    JNode a = JNodes.loadYamlViaJson(Locations.classpath("test1-valid.yaml"));
+    //assertEquals("SyamlANode(SyamlMap(SyamlPair(key1,Animals are: dogs, cats)))",a.toString());
+    assertEquals("RaptureJsonANode(json\"\"\"{\"key1\":\"Animals are: dogs, cats\"}\"\"\")",a.toString());
+  }
+  @Test
+  public void testInvalidYamlViaJson() {
+    exception.expect(RuntimeException.class);
+    exception.expectMessage("mapping values are not allowed here");
+    exception.expectMessage("key1");
+    JNode b = JNodes.loadYamlViaJson(Locations.classpath("test1-invalid.yaml"));
     assertEquals("",b.asString());
   }
   

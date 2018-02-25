@@ -183,7 +183,7 @@ class SNodeTest extends org.raisercostin.jedi.impl.SlfLogger {
   }
   @Test def testYamlAsOptionString() {
     val node:SNode = SNodes.loadYamlViaSyaml(Locations.memory("").writeContent("title: title1")).get
-    assertEquals("",node.title.asOptionString)
+    assertEquals(Some("title1"),node.title.asOptionString)
   }
   @Test def testYamlViaJsonAsOptionString() {
     val node:SNode = SNodes.loadYamlViaJson(Locations.memory("").writeContent("title: title1")).get

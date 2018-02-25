@@ -23,6 +23,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 
 object SNodes {
   def parseYaml(data: String): Try[RaptureJsonANode] = loadYaml(Locations.memory("a").writeContent(data))
+  def parseYamlViaJson(data: String): Try[RaptureJsonANode] = loadYamlViaJson(Locations.memory("a").writeContent(data))
+  def parseYamlViaSyaml(data: String): Try[SyamlANode] = loadYamlViaSyaml(Locations.memory("a").writeContent(data))
   def parseJson(data: String): Try[RaptureJsonANode] = loadJson(Locations.memory("a").writeContent(data))
   def parseXml(data: String): Try[SNode] = parseXmlViaRapture(data)
   def parseXmlViaRapture(data: String): Try[SNode] = loadXmlViaRapture(Locations.memory("a").writeContent(data))
@@ -185,13 +187,27 @@ case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
   //  def children: ANodeList = new SimpleNodeList(syaml.children.toStream.map(new SyamlANode(_)))
   //def $deref($path: Vector[Either[Int,String]]): ANode = new SyamlANode($root,path ++ $path)
   //def $path: Vector[Either[Int,String]] = path
-  override def asType[T](t: ru.Type): T = {
-    t match {
+  //override def as[T](implicit tag: WeakTypeTag[T]): T = 
+  override def asType[T](tag: ru.Type): T = {
+    tag match {
       case t if t =:= ru.typeOf[String] =>
         syaml.value.asInstanceOf[T]
       case _ =>
         ???
     }
+  }
+
+  override def as[T](implicit tag: WeakTypeTag[T]): T = tag.tpe match {
+    case t @ TypeRef(utype, usymbol, args) if t =:= ru.typeOf[String] =>
+      println(List(utype, usymbol, args).mkString(","))
+      //asRapture[String].asInstanceOf[T]
+      syaml.valueToOption.get.asInstanceOf[T]
+    case t @ TypeRef(utype, usymbol, args) if t =:= ru.typeOf[Option[String]] =>
+      println(List(utype, usymbol, args).mkString(","))
+      syaml.valueToOption.asInstanceOf[T]
+    case t @ TypeRef(utype, usymbol, args) =>
+      println(List(utype, usymbol, args).mkString(","))
+      throw new RuntimeException(s"Can't convert [$syaml] to " + List(utype, usymbol, args).mkString(","))
   }
   override def asIterable: Iterable[self2.type] = syaml.children.map(x => SyamlANode(x)).asInstanceOf[Iterable[self2.type]]
 }

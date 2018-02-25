@@ -4,6 +4,12 @@ public class JNodes {
   public static JNode parseYaml(String content) {
     return SNodes.parseYaml(content).get();
   }
+  public static JNode parseYamlViaJson(String content) {
+    return SNodes.parseYamlViaJson(content).get();
+  }
+  public static JNode parseYamlViaSyaml(String content) {
+    return SNodes.parseYamlViaSyaml(content).get();
+  }
 
   public static RaptureJsonANode parseJson(String content) {
     return SNodes.parseJson(content).get();
@@ -23,6 +29,14 @@ public class JNodes {
 
   public static JNode loadYaml(InputLocation location) {
     return SNodes.loadYaml(location).get();
+  }
+
+  public static JNode loadYamlViaSyaml(InputLocation location) {
+    return SNodes.loadYamlViaSyaml(location).get();
+  }
+
+  public static JNode loadYamlViaJson(InputLocation location) {
+    return SNodes.loadYamlViaJson(location).get();
   }
 
   public static JNode loadFreemind(InputLocation location) {
