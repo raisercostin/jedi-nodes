@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 
 object SNodes {
-  def parseYaml(data: String): Try[SNode] = loadYaml(Locations.memory("a").writeContent(data))
+  def parseYaml(data: String): Try[RaptureJsonANode] = loadYaml(Locations.memory("a").writeContent(data))
   def parseJson(data: String): Try[RaptureJsonANode] = loadJson(Locations.memory("a").writeContent(data))
   def parseXml(data: String): Try[SNode] = parseXmlViaRapture(data)
   def parseXmlViaRapture(data: String): Try[SNode] = loadXmlViaRapture(Locations.memory("a").writeContent(data))
@@ -30,8 +30,12 @@ object SNodes {
   def parseXmlViaScala(data: String): Try[SNode] = loadXmlViaRapture(Locations.memory("a").writeContent(data))
   def parseFreemind(data: String): Try[SNode] = loadFreemind(Locations.memory("a").writeContent(data))
 
-  def loadYaml(location: InputLocation): Try[SNode] = {
+  def loadYaml(location: InputLocation): Try[RaptureJsonANode] = loadYamlViaJson(location)
+  def loadYamlViaSyaml(location: InputLocation): Try[SyamlANode] = {
     location.readContentAsText.map(x => Syaml.parse(x)(InputLocationSyamlSource(location))).map(x => SyamlANode(x))
+  }
+  def loadYamlViaJson(location: InputLocation): Try[RaptureJsonANode] = {
+    location.readContentAsText.map(x => Syaml.parse(x)(InputLocationSyamlSource(location))).map(x => SyamlANode(x)).flatMap(yamlToJson)
   }
   def loadJson(location: InputLocation): Try[RaptureJsonANode] = {
     import rapture.core._

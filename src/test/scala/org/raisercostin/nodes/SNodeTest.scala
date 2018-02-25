@@ -170,16 +170,24 @@ class SNodeTest extends org.raisercostin.jedi.impl.SlfLogger {
     assertEquals("value2", all.$something.child1.zipWithIndex.toSeq.apply(1)._1.toStringValue)
     assertEquals("value2", all.something.child1.zipWithIndex.toSeq.apply(1)._1.toStringValue)
   }
-  @Test def readAll() {
-    val node:SNode = SNodes.loadYaml(Locations.classpath("test2-iterate.yaml")).get
+  @Test def testLoadYamlViaSyaml() {
+    val node:SNode = SNodes.loadYamlViaSyaml(Locations.classpath("test2-iterate.yaml")).get
     assertEquals("List(SyamlANode(SyamlValue(Accurate customer data)), "+
         "SyamlANode(SyamlValue(Additional care on sensitive data)), "+
         "SyamlANode(SyamlValue(Minimize security incident)), "+
         "SyamlANode(SyamlValue(Minimize data breaches)))",node.benefits.asStatic.asIterable.toString)
   }
+  @Test def testLoadYamlViaJson() {
+    val node:SNode = SNodes.loadYamlViaJson(Locations.classpath("test2-iterate.yaml")).get
+    assertEquals("""Vector(RaptureJsonANode(json"Accurate customer data"), RaptureJsonANode(json"Additional care on sensitive data"), RaptureJsonANode(json"Minimize security incident"), RaptureJsonANode(json"Minimize data breaches"))""",node.benefits.asStatic.asIterable.toString.replaceAll("[\"]{4}","\""))
+  }
   @Test def testYamlAsOptionString() {
-    val node:SNode = SNodes.loadYaml(Locations.memory("").writeContent("title: title1")).get
-    assertEquals("",node.title.asClass(classOf[Option[String]]))
+    val node:SNode = SNodes.loadYamlViaSyaml(Locations.memory("").writeContent("title: title1")).get
+    assertEquals("",node.title.asOptionString)
+  }
+  @Test def testYamlViaJsonAsOptionString() {
+    val node:SNode = SNodes.loadYamlViaJson(Locations.memory("").writeContent("title: title1")).get
+    assertEquals(Some("title1"),node.title.asOptionString)
   }
   @Test def testJsonAsOptionString() {
     val node:RaptureJsonANode = SNodes.loadJson(Locations.memory("").writeContent("""{"title": "title1"}""")).get
