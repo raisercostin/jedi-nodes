@@ -8,6 +8,8 @@ public interface JNode{
   }   
 
   JNode child(String key);
+  JNode addChildToJNode(String key, Object value);
+  
   <T> T asClass(Class<T> clazz);
   SNode asSNode();
   Optional<String> asOptionalString();

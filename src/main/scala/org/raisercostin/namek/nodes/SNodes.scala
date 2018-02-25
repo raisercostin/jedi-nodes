@@ -111,6 +111,10 @@ trait SNodeNoDynamic extends JNode { self =>
   def id: String /*NodeId*/ = "@" + hashCode
 
   override def child(key: String): self.type
+  override def addChildToJNode(key:String,value:Any):JNode = addChild(key,value)
+  //TODO key is not added
+  def addChild(key:String,value:Any):SNode = self.asInstanceOf[SNode]
+
   //see more https://medium.com/@sinisalouc/overcoming-type-erasure-in-scala-8f2422070d20
   def as[T](implicit tag: WeakTypeTag[T]): T = ???
   override def asClass[T](clazz: Class[T]): T = {
@@ -138,6 +142,15 @@ trait SNodeNoDynamic extends JNode { self =>
   /**Switch node to a statically checked type.*/
   def asStatic: SNodeNoDynamic = this
   def asOptionalString(): java.util.Optional[String] = java.util.Optional.ofNullable(asOptionString.getOrElse(null))
+//  @deprecated def get(key: String): self.type = child(key)
+//  def or(key: String, value: =>self.type): self.type = {
+//    val res = child(key)
+//    if (res.isFailure)
+//      value
+//    else
+//      res
+//  }
+  def getOr[T](key: String, value: =>T)(implicit tag: WeakTypeTag[T]): T = child(key).as[Option[T]].getOrElse(value)
 }
 case class ANodeError(ex: Throwable, val path: Vector[Either[Int, String]] = Vector()) extends SNode { self =>
   //type ChildNodeType = ANodeError
@@ -211,6 +224,11 @@ case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
       throw new RuntimeException(s"Can't convert [$syaml] to " + List(utype, usymbol, args).mkString(","))
   }
   override def asIterable: Iterable[self2.type] = syaml.children.map(x => SyamlANode(x)).asInstanceOf[Iterable[self2.type]]
+
+  override def addChildToJNode(key:String,value:Any):JNode = addChild(key,value)
+    
+  override def addChild(key:String,value:Any):SNode = 
+    SyamlANode(syaml.asSyamlMap.withChild(key,value))
 }
 
 case class RaptureXmlNode(xml: rapture.xml.Xml) extends SNode { self =>

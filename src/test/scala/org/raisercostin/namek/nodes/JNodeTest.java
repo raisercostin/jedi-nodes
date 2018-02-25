@@ -13,16 +13,6 @@ import org.yaml.snakeyaml.scanner.ScannerException;
 
 public class JNodeTest {
 
-  @Test
-  public void testYaml() {
-    JNode a = JNodes.parseYamlViaSyaml("key1 : value1\nkey2 : value2");
-    JNode b = JNodes.yamlToJson(a);
-    JNodeValidator schema = JsonNodeValidator.fromLocation(Locations.classpath("schema1.json"));
-    b.validate(schema);
-    JNodeValidator yamlSchemaValidator = YamlNodeValidator.from(JsonNodeValidator.fromLocation(Locations.classpath("schema1.json")));
-    a.validate(yamlSchemaValidator);
-    testJNode(a);
-  }
   @Rule
   public final ExpectedException exception = ExpectedException.none();
   @Test
@@ -87,6 +77,20 @@ public class JNodeTest {
         "</node>\r\n" + 
         "</map>".replaceAll("'","\""));
     testJNode(a);
+  }
+
+  @Test
+  public void testYaml() {
+    JNode a = JNodes.parseYamlViaSyaml("key1 : value1\nkey2 : value2");
+    JNode b = JNodes.yamlToJson(a);
+    JNodeValidator schema = JsonNodeValidator.fromLocation(Locations.classpath("schema1.json"));
+    b.validate(schema);
+    JNodeValidator yamlSchemaValidator = YamlNodeValidator.from(JsonNodeValidator.fromLocation(Locations.classpath("schema1.json")));
+    a.validate(yamlSchemaValidator);
+    testJNode(a);
+    assertEquals(Optional.empty(),a.child("key3").asOptionalString());
+    JNode c = a.addChildToJNode("key3",5);
+    assertEquals(Optional.of(5),b.child("key3").asOptionalString());
   }
 
   private void testJNode(JNode node) {
