@@ -182,24 +182,27 @@ class SNodeTest extends org.raisercostin.jedi.impl.SlfLogger {
   }
   @Test def testLoadYamlViaJson() {
     val node:SNode = SNodes.loadYamlViaJson(Locations.classpath("test2-iterate.yaml")).get
-    assertEquals("""Vector(RaptureJsonANode(json"Accurate customer data"), RaptureJsonANode(json"Additional care on sensitive data"), RaptureJsonANode(json"Minimize security incident"), RaptureJsonANode(json"Minimize data breaches"))""",node.benefits.asStatic.asIterable.toString.replaceAll("[\"]{4}","\""))
+    assertEquals("""Vector(RaptureJsonANode(json"Accurate customer data"), RaptureJsonANode(json"Additional care on sensitive data"), RaptureJsonANode(json"Minimize security incident"), RaptureJsonANode(json"Minimize data breaches"))""",
+        node.benefits.asStatic.asIterable.toString.replaceAll("[\"]{4}","\""))
   }
   @Test def testYamlAsOptionString() {
     val node:SNode = SNodes.loadYamlViaSyaml(Locations.memory("").writeContent("title: title1")).get
     assertEquals(Some("title1"),node.title.asOptionString)
+    assertEquals(None,node.title2.asOptionString)
   }
   @Test def testYamlViaJsonAsOptionString() {
     val node:SNode = SNodes.loadYamlViaJson(Locations.memory("").writeContent("title: title1")).get
     assertEquals(Some("title1"),node.title.asOptionString)
+    assertEquals(None,node.title2.asOptionString)
   }
-  @Ignore
   @Test def testJsonAsOptionString() {
     val node:RaptureJsonANode = SNodes.loadJson(Locations.memory("").writeContent("""{"title": "title1"}""")).get
     import rapture.json.jsonBackends.spray._
     assertEquals(Some("title1"),node.title.asRapture[Option[String]])
     assertEquals(Some("title1"),node.title.as[Option[String]])
     assertEquals(Some("title1"),node.title.asOptionString)
-    assertEquals(Some("title1"),node.title.asClass(classOf[Option[String]]))
+    assertEquals(None,node.title2.asOptionString)
+    //assertEquals(Some("title1"),node.title.asClass(classOf[Option[String]]))
   }
 }
 

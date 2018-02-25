@@ -87,17 +87,17 @@ import org.raisercostin.syaml.SyamlError
 import rapture.data.Extractor
 import scala.reflect.ClassTag
 import scala.runtime.ScalaRunTime
-trait SNode extends Dynamic with SNodeNoDynamic with Iterable[SNode]{ self=>
+trait SNode extends Dynamic with SNodeNoDynamic with Iterable[SNode] { self =>
   override def isEmpty: Boolean = isFailure
   override def iterator: Iterator[self.type] = asIterable.iterator
-  
+
   //implement Iterable
   /**Adding `with Iterable[SNode]` breaks toString on case classes. So we redefine it.*/
-  override def toString():String = self.getClass match {
+  override def toString(): String = self.getClass match {
     case t if classOf[Product].isAssignableFrom(t) => ScalaRunTime._toString(self.asInstanceOf[Product])
-    case _ => ???
+    case _                                         => ???
   }
-  
+
 }
 trait SNodeNoDynamic extends JNode { self =>
 
@@ -137,6 +137,7 @@ trait SNodeNoDynamic extends JNode { self =>
   def asIterable: Iterable[self.type] = ???
   /**Switch node to a statically checked type.*/
   def asStatic: SNodeNoDynamic = this
+  def asOptionalString(): java.util.Optional[String] = java.util.Optional.ofNullable(asOptionString.getOrElse(null))
 }
 case class ANodeError(ex: Throwable, val path: Vector[Either[Int, String]] = Vector()) extends SNode { self =>
   //type ChildNodeType = ANodeError
@@ -158,13 +159,13 @@ case class ANodeError(ex: Throwable, val path: Vector[Either[Int, String]] = Vec
 }
 
 //trait SimpleANode extends SNode {
-  //  override def query(path: NodeSelector*): ANode = {
-  //    path.foldLeft[ANode](this) {
-  //      case (x: ANode, key) =>
-  //        println("search " + key + " on " + x.id)
-  //        x.queryOne(key)
-  //    }
-  //  }
+//  override def query(path: NodeSelector*): ANode = {
+//    path.foldLeft[ANode](this) {
+//      case (x: ANode, key) =>
+//        println("search " + key + " on " + x.id)
+//        x.queryOne(key)
+//    }
+//  }
 //}
 //
 //case class SimpleNodeList(all: Stream[ANode]) extends ANode {
@@ -187,7 +188,7 @@ case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
   //  def children: ANodeList = new SimpleNodeList(syaml.children.toStream.map(new SyamlANode(_)))
   //def $deref($path: Vector[Either[Int,String]]): ANode = new SyamlANode($root,path ++ $path)
   //def $path: Vector[Either[Int,String]] = path
-  //override def as[T](implicit tag: WeakTypeTag[T]): T = 
+  //override def as[T](implicit tag: WeakTypeTag[T]): T =
   override def asType[T](tag: ru.Type): T = {
     tag match {
       case t if t =:= ru.typeOf[String] =>
@@ -228,7 +229,7 @@ case class RaptureXmlNode(xml: rapture.xml.Xml) extends SNode { self =>
   }
 
   import rapture.data.Extractor
-  def as2[T](implicit ext: Extractor[T, rapture.xml.Xml]): T = {
+  def asRapture[T](implicit ext: Extractor[T, rapture.xml.Xml]): T = {
     import rapture.core._
     import rapture.json._
     //    import rapture.core.modes.returnTry
@@ -239,6 +240,17 @@ case class RaptureXmlNode(xml: rapture.xml.Xml) extends SNode { self =>
     //val ext = implicitly(rapture.data.Extractor[String,Json])
     //println(json)
     xml.as[T]
+  }
+  override def as[T](implicit tag: WeakTypeTag[T]): T = tag.tpe match {
+    case t @ TypeRef(utype, usymbol, args) if t =:= ru.typeOf[String] =>
+      println(List(utype, usymbol, args).mkString(","))
+      asRapture[String].asInstanceOf[T]
+    case t @ TypeRef(utype, usymbol, args) if t =:= ru.typeOf[Option[String]] =>
+      println(List(utype, usymbol, args).mkString(","))
+      asRapture[Option[String]].asInstanceOf[T]
+    case t @ TypeRef(utype, usymbol, args) =>
+      println(List(utype, usymbol, args).mkString(","))
+      throw new RuntimeException(s"Can't convert [$xml] to " + List(utype, usymbol, args).mkString(","))
   }
 }
 object YamlNodeValidator {

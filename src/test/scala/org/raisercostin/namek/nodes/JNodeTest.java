@@ -2,6 +2,8 @@ package org.raisercostin.namek.nodes;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Optional;
+
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -91,6 +93,8 @@ public class JNodeTest {
     assertEquals("value1",node.child("key1").asClass(String.class));
     assertEquals("value1",node.child("key1").asString());
     assertEquals("value1",node.child("key1").asSNode().asString());
+    assertEquals(Optional.<String>of("value1"),node.child("key1").asOptionalString());
+    assertEquals(Optional.empty(),node.child("key3").asOptionalString());
     node.validate();
     
     //String exported = node.save();
