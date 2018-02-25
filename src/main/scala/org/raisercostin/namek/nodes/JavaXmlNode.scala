@@ -6,7 +6,7 @@ import org.raisercostin.namek.nodes._
 import rapture.data.MutableCell
 import scala.Vector
 
-case class JavaXmlNode(value:org.w3c.dom.Node) extends SimpleANode with SNode {
+case class JavaXmlNode(value:org.w3c.dom.Node) extends SimpleANode with SNode {self=>
   import JavaXmlNode._
   import javax.xml.xpath.XPathFactory
   import org.w3c.dom.NodeList
@@ -34,7 +34,7 @@ case class JavaXmlNode(value:org.w3c.dom.Node) extends SimpleANode with SNode {
 //    val stream: Stream[ANode] = Stream.from(0, nl.getLength).map(i => JavaXmlNode(nl.item(i)))
 //    SimpleNodeList(stream)
 //  }
-  override def child(key: String): SNode = queryOne(key)
+  override def child(key: String): self.type = queryOne(key).asInstanceOf[self.type]
   //override def children: ANode = queryOne("*")
   //override def id = value.Option(value.\@("id")).filter(_.nonEmpty).getOrElse(super.id)
   //  def child(key: NodeSelector): ANode = Try { one(value.\(key)) }.

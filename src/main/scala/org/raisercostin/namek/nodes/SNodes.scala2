@@ -80,28 +80,28 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.raisercostin.syaml.SyamlError
 import rapture.data.Extractor
 import scala.reflect.ClassTag
-import scala.runtime.ScalaRunTime
 
-trait SNode extends Dynamic with JNode /*with Iterable[SNode]*/ { self =>
-//type NodeSelector = String
+trait SNode extends Dynamic with JNode with Iterable[SNode] { self =>
+  //type NodeSelector = String
   //type NodeId = String
   //type ChildNodeType
   def selectDynamic(key: String): self.type = child(key).asInstanceOf[self.type]
-  def isEmpty: Boolean = isFailure
-  def iterator: Iterator[self.type] = children2.iterator
+  override def isEmpty: Boolean = isFailure
   //def nonEmpty: Boolean = isSuccess
   def isFailure: Boolean = !isSuccess
   def isSuccess: Boolean = true
   def id: String /*NodeId*/ = "@" + hashCode
+  override def iterator: Iterator[self.type] = children2.iterator
   def children2: Iterable[self.type] = ???
 
   override def child(key: String): self.type
   //see more https://medium.com/@sinisalouc/overcoming-type-erasure-in-scala-8f2422070d20
   def as[T](implicit tag: WeakTypeTag[T]): T = ???
-  override def asClass[T](clazz: Class[T]): T = {
-    val t: ru.Type = getType(clazz)
-    asType(t)
-  }
+  override def asClass[T](clazz: Class[T]): T = as[T](getType(clazz))
+//  {
+//    val t: ru.Type = getType(clazz)
+//    asType(t)
+//  }
   def getType[T](clazz: Class[T]): ru.Type = {
     val runtimeMirror = ru.runtimeMirror(clazz.getClassLoader)
     runtimeMirror.classSymbol(clazz).toType
@@ -114,10 +114,181 @@ trait SNode extends Dynamic with JNode /*with Iterable[SNode]*/ { self =>
         x.child(key)
     }
   }
-
-  def asOptionString: Option[String] = as[Option[String]]
-  def asSNode[T <: SNode](): T = this.asInstanceOf[T]
 }
+
+//import rapture.data.MutableCell
+//import rapture.data.DataType
+//import rapture.data.DataAst
+//import rapture.core.Mode
+//import rapture.data.TypeMismatchException
+//import rapture.data.DataCompanion
+//import rapture.data.MissingValueException
+//import rapture.data.DataTypes
+//import rapture.data.MutableCell
+//import rapture.data.MutableCell
+//import scala.reflect.ClassTag
+//import scala.reflect.api.TypeTags
+//
+//trait DynamicData2 extends Dynamic { self2 =>
+//  type T = ANode2
+//  /** Assumes the Json object wraps a `Map`, and extracts the element `key`. */
+//  def selectDynamic(key: String): T = $deref(Right(key) +: $path)
+//  def self = selectDynamic("self")
+//  def $deref($path: Vector[Either[Int, String]]): T
+//  def $path: Vector[Either[Int, String]]
+//  def $extract(sp: Vector[Either[Int, String]]): T =
+//    if (sp.isEmpty) self
+//    else
+//      sp match {
+//        case Left(i) +: tail  => ??? //apply(i).$extract(tail)
+//        case Right(e) +: tail => selectDynamic(e).$extract(tail)
+//      }
+//}
+//trait DataType2 { self2 =>
+//  type T
+//  type AstType = DataAst
+//  val $root: MutableCell
+//  implicit def $ast: AstType
+//  def $path: Vector[Either[Int, String]]
+//  def $normalize: Any = doNormalize(false)
+//  def $wrap(any: Any, $path: Vector[Either[Int, String]] = Vector()): T
+//  def $deref($path: Vector[Either[Int, String]] = Vector()): T
+//  def $extract($path: Vector[Either[Int, String]]): T
+//
+//  def \(key: String): T = $deref(Right(key) +: $path)
+//
+//  def \\(key: String): T = $wrap($ast.fromArray(derefRecursive(key, $normalize)))
+//
+//  def toBareString: String
+//
+//  private def derefRecursive(key: String, any: Any): List[Any] =
+//    if (!$ast.isObject(any)) Nil
+//    else
+//      $ast.getKeys(any).to[List].flatMap {
+//        case k if k == key => List($ast.dereferenceObject(any, k))
+//        case k             => derefRecursive(key, $ast.dereferenceObject(any, k))
+//      }
+//
+//  protected def doNormalize(orEmpty: Boolean): Any = {
+//    rapture.core.yCombinator[(Any, Vector[Either[Int, String]]), Any] { fn =>
+//      {
+//        case (j, Vector()) => j: Any
+//        case (j, t :+ e) =>
+//          fn(({
+//            if (e.bimap(x => $ast.isArray(j), x => $ast.isObject(j))) {
+//              try e.bimap($ast.dereferenceArray(j, _), $ast.dereferenceObject(j, _))
+//              catch {
+//                case TypeMismatchException(exp, fnd) => throw TypeMismatchException(exp, fnd)
+//                case exc: Exception =>
+//                  if (orEmpty) DataCompanion.Empty
+//                  else {
+//                    e match {
+//                      case Left(e)  => throw MissingValueException(s"[$e]")
+//                      case Right(e) => throw MissingValueException(e)
+//                    }
+//                  }
+//              }
+//            } else
+//              throw TypeMismatchException(
+//                if ($ast.isArray(j)) DataTypes.Array else DataTypes.Object,
+//                e.bimap(l => DataTypes.Array, r => DataTypes.Object))
+//          }, t))
+//      }
+//    }($root.value -> $path)
+//  }
+//
+//  import rapture.data.`Data#as`
+//  import rapture.data.Extractor
+//
+//  /** Assumes the Json object is wrapping a `T`, and casts (intelligently) to that type. */
+//  def as[S](implicit ext: Extractor[S, T], mode: Mode[`Data#as`]): mode.Wrap[S, ext.Throws] =
+//    ext.extract(this.asInstanceOf[T], $ast, mode)
+//
+//  import rapture.core.modes
+//  def is[S](implicit ext: Extractor[S, T]): Boolean =
+//    try {
+//      ext.extract(this.asInstanceOf[T], $ast, modes.throwExceptions())
+//      true
+//    } catch {
+//      case e: Exception => false
+//    }
+//
+//  def apply(i: Int = 0): T = $deref(Left(i) +: $path)
+//
+//  override def equals(any: Any) =
+//    try {
+//      any match {
+//        case any: DataType[_, _] => $normalize == any.$normalize
+//        case _                   => false
+//      }
+//    } catch { case e: Exception => false }
+//
+//  override def hashCode = $root.value.hashCode ^ 3271912
+//  implicit class EitherExtras[L, R](either: Either[L, R]) {
+//    def bimap[T](leftFn: L => T, rightFn: R => T) = either match {
+//      case Left(left)   => leftFn(left)
+//      case Right(right) => rightFn(right)
+//    }
+//  }
+//}
+//trait ANode2 extends DynamicData2 /* with DataType2 */ with JNode {
+//  type NodeSelector = String
+//  type NodeId = String
+//  //type T = ANode
+//  //  def empty: Boolean = isFailure
+//  //  def nonEmpty: Boolean = isSuccess
+//  //  def isFailure: Boolean = !isSuccess
+//  //  def isSuccess: Boolean = true
+//  //  def id: NodeId = "@" + hashCode
+//  def query(path: NodeSelector): ANode2 = query(path.split("\\."): _*)
+//  def query(path: NodeSelector*): ANode2 = ???
+//  def queryOne(path: NodeSelector): ANode2 = ???
+//  def child(key: NodeSelector): ANode2 = selectDynamic(key)
+//  //def children: ANode = asList
+//
+//  def asStream: Stream[ANode2] = ???
+//  final def asList: List[ANode2] = asStream.toList
+//  override def as[T](clazz: Class[T]): T = {
+//    println(s"convert $this to ${clazz}")
+//    ???
+//  }
+//  //
+//  //  //type AstType <: DataAst
+//  //  //def as[T](implicit ext: Extractor[T,Json]):T = ???
+//  //  implicit def $ast: DataAst = ???
+//  //  //val $root: rapture.data.MutableCell = ???//val $root: MutableCell, val $path: Vector[Either[Int, String]] = Vector())(implicit val $ast: XmlAst)
+//  //  def $wrap(any: Any,$path: scala.collection.immutable.Vector[scala.util.Either[Int,String]]): org.raisercostin.namek.nodes.ANode = ???
+//  //  def toBareString: String = ???
+//  //  import scala.reflect.runtime.universe._
+//  //  override def as[T](clazz:Class[T]):T = {
+//  //    println(s"convert $this to ${clazz}")
+//  //    import rapture.core.modes.returnTry
+//  //    import rapture.json._
+//  //    import rapture.core._
+//  //    import rapture.json.formatters.humanReadable._
+//  //    import rapture.json.jsonBackends.spray._
+//  //    import modes.returnTry
+//  //    import JodaAndJdkTimeConverters.implicits._
+//  //    import JodaAndJdkTimeConverters._
+//  //    Extractor.anyExtractor.extract(any, ast, mode)
+//  //    //super[DataType2].as[T].asInstanceOf[T]
+//  //    //???(implicit ext: rapture.data.Extractor[T,ANode.this.T], implicit mode: rapture.core.Mode[rapture.data.Data#as])mode.Wrap[T,ext.Throws].  Unspecified value parameters ext, mode.
+//  //
+//  //  }
+//  //  override def as[T]()(implicit typeTag:TypeTag[T]):T = {
+//  //    println(s"convert $this to ${typeTag}")
+//  //    ???
+//  //  }
+//}
+//
+//trait ANodeList extends ANode {
+//  def one: ANode = all match {
+//    case Stream()    => throw new IllegalArgumentException(s"No child node.")
+//    case Stream(res) => res
+//    case _           => throw new IllegalArgumentException(s"There are multiple child nodes.")
+//  }
+//  def all: Stream[ANode]
+//}
 case class ANodeError(ex: Throwable, val path: Vector[Either[Int, String]] = Vector()) extends SNode { self =>
   //type ChildNodeType = ANodeError
   override def isSuccess: Boolean = false
@@ -179,7 +350,6 @@ case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
 }
 
 case class RaptureXmlNode(xml: rapture.xml.Xml) extends SNode { self =>
-  override def toString():String = ScalaRunTime._toString(this)//s"RaptureJsonANode(${json.toBareString})"
   println(s"loaded $this")
   def child(key: String): self.type = RaptureXmlNode(xml.selectDynamic(key)).asInstanceOf[self.type]
   override def asType[T](t: ru.Type): T = {
@@ -249,7 +419,6 @@ case class JsonNodeValidator(schema: JsonSchema) extends JNodeValidator {
 }
 
 case class RaptureJsonANode(json: Json) extends SNode { self =>
-  override def toString():String = ScalaRunTime._toString(this)//s"RaptureJsonANode(${json.toBareString})"
   def child(key: String): self.type = RaptureJsonANode(json.selectDynamic(key)).asInstanceOf[self.type]
   //def json:Json = $root.value.asInstanceOf[Json]
   //override type T = RaptureJsonANode
@@ -281,9 +450,9 @@ case class RaptureJsonANode(json: Json) extends SNode { self =>
     //implicit val ext:rapture.data.Extractor[T,rapture.json.Json] = Extractor.anyExtractor[Json]
     t match {
       case t if t =:= ru.typeOf[String] =>
-        asRapture[String].asInstanceOf[T]
+        as2[String].asInstanceOf[T]
       case t if t =:= ru.typeOf[Option[String]] =>
-        asRapture[Option[String]].asInstanceOf[T]
+        as2[Option[String]].asInstanceOf[T]
       case _ =>
         //as2[T].asInstanceOf[T]
         t.asInstanceOf[T]
@@ -291,7 +460,7 @@ case class RaptureJsonANode(json: Json) extends SNode { self =>
   }
 
   import rapture.data.Extractor
-  def asRapture[T](implicit ext: Extractor[T, Json]): T = {
+  def as2[T](implicit ext: Extractor[T, Json]): T = {
     import rapture.core._
     import rapture.json._
     //    import rapture.core.modes.returnTry
@@ -311,13 +480,13 @@ case class RaptureJsonANode(json: Json) extends SNode { self =>
   override def as[T](implicit tag: WeakTypeTag[T]): T = tag.tpe match {
     case t @ TypeRef(utype, usymbol, args) if t =:= ru.typeOf[String] =>
       println(List(utype, usymbol, args).mkString(","))
-      asRapture[String].asInstanceOf[T]
+      as2[String].asInstanceOf[T]
     case t @ TypeRef(utype, usymbol, args) if t =:= ru.typeOf[Option[String]] =>
       println(List(utype, usymbol, args).mkString(","))
-      asRapture[Option[String]].asInstanceOf[T]
+      as2[Option[String]].asInstanceOf[T]
     case t @ TypeRef(utype, usymbol, args) =>
       println(List(utype, usymbol, args).mkString(","))
-      throw new RuntimeException(s"Can't convert [$json] to " + List(utype, usymbol, args).mkString(","))
+      throw new RuntimeException(s"Can't convert [$json] to "+List(utype, usymbol, args).mkString(","))
   }
 }
 
@@ -374,8 +543,4 @@ case class ScalaElemNode(value: Node) extends SimpleANode with SNode { self =>
 case class MindMapJavaXmlNode(node: JavaXmlNode) extends SimpleANode with SNode { self =>
   override def child(key: String): self.type = MindMapJavaXmlNode(node.queryOne("//node[@TEXT='" + key + "']").asInstanceOf[JavaXmlNode]).asInstanceOf[self.type]
   def all: Stream[SNode] = ???
-}
-object `package`{
-  import scala.language.implicitConversions
-  implicit def toIterable[T<:SNode](node:T):Iterable[T] = node.children
 }

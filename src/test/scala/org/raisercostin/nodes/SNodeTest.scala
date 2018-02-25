@@ -23,10 +23,11 @@ import scala.util.Try
 import rapture.json.Json
 import org.raisercostin.syaml.StringSyamlSource
 import org.raisercostin.syaml.SyamlValue
+import org.raisercostin.namek.nodes.RaptureJsonANode
 
 class SNodeTest extends org.raisercostin.jedi.impl.SlfLogger {
   @Test def readMenu() {
-    val data: Syaml = FreeMind.yaml.load(Locations.file("dcs-data.mm").asFile).get
+    val data: Syaml = FreeMind.yaml.load(Locations.classpath("dcs-data.mm").asFile).get
     println(data.dump)
     val menu = data.query("dcs.menu.Solutions & Services")
     println("** menu  ***" + menu.dump)
@@ -51,7 +52,7 @@ class SNodeTest extends org.raisercostin.jedi.impl.SlfLogger {
     }
     implicit def toRichConfig(config: Config): RichConfig = RichConfig(config)
 
-    val config: Config = FreeMind.hocon.load(Locations.file("dcs-data.mm"))
+    val config: Config = FreeMind.hocon.load(Locations.classpath("dcs-data.mm"))
     println(config.root().render(ConfigRenderOptions.defaults().setOriginComments(false)))
     //    val menu0 = config.getConfig("dcs").
     //        getAnyRefList("menu").
@@ -62,10 +63,10 @@ class SNodeTest extends org.raisercostin.jedi.impl.SlfLogger {
     val menu = config.getList("dcs.menu.Solutions \\& Services")
   }
   @Test def readMenuViaTree() {
-    val tree: MindMap = FreeMind.tree.load(Locations.file("dcs-data.mm"))
+    val tree: MindMap = FreeMind.tree.load(Locations.classpath("dcs-data.mm"))
   }
   @Test def readMenuViaXml() {
-    val tree: SNode = SNodes.loadXmlViaScala(Locations.file("dcs-data.mm")).get
+    val tree: SNode = SNodes.loadXmlViaScala(Locations.classpath("dcs-data.mm")).get
     //println(tree)
     //println(tree.query("map.node[@TEXT=dcs].node[@TEXT=menu].node[0]"))
     assertTrue(tree.isSuccess)
@@ -172,6 +173,18 @@ class SNodeTest extends org.raisercostin.jedi.impl.SlfLogger {
   @Test def readAll() {
     val node:SNode = SNodes.loadYaml(Locations.classpath("test2-iterate.yaml")).get
     assertEquals("",node.benefits.children2)
+  }
+  @Test def testYamlAsOptionString() {
+    val node:SNode = SNodes.loadYaml(Locations.memory("").writeContent("title: title1")).get
+    assertEquals("",node.title.asClass(classOf[Option[String]]))
+  }
+  @Test def testJsonAsOptionString() {
+    val node:RaptureJsonANode = SNodes.loadJson(Locations.memory("").writeContent("""{"title": "title1"}""")).get
+    import rapture.json.jsonBackends.spray._
+    assertEquals(Some("title1"),node.title.asRapture[Option[String]])
+    assertEquals(Some("title1"),node.title.as[Option[String]])
+    assertEquals(Some("title1"),node.title.asOptionString)
+    assertEquals(Some("title1"),node.title.asClass(classOf[Option[String]]))
   }
 }
 
