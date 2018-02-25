@@ -2,6 +2,7 @@ package org.raisercostin.namek.nodes;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -70,6 +71,7 @@ public class JNodeTest {
     testJNode(a);
   }
 
+  @Ignore
   @Test
   public void testFreeMind() {
     JNode a = JNodes.parseFreemind("<map version=\"1.0.1\">\r\n" + 

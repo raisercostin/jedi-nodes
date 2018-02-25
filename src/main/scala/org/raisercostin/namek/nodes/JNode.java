@@ -7,7 +7,7 @@ public interface JNode{
 
   JNode child(String key);
   <T> T asClass(Class<T> clazz);
-  <T extends SNode> T asSNode();
+  SNode asSNode();
 
   /**Checks that the node is valid. For json it might use http://json-schema.org, for xml xsd or xslt. The node could have a default validator.*/
   default void validate() {

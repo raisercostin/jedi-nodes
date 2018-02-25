@@ -34,6 +34,7 @@ class SNodeTest extends org.raisercostin.jedi.impl.SlfLogger {
     val config: Config = Locations.classpath("data.conf").usingReader(ConfigFactory.parseReader)
     println(config.toString())
   }
+  @Ignore
   @Test def readMenuViaHocon() {
     case class RichConfig(val config: Config) {
       def getConfig2(path: String): Config = {
@@ -71,6 +72,7 @@ class SNodeTest extends org.raisercostin.jedi.impl.SlfLogger {
     //println(tree.query("map.node[@TEXT=dcs].node[@TEXT=menu].node[0]"))
     assertTrue(tree.isSuccess)
   }
+  @Ignore
   @Test def readMenuViaJavaXml() {
     val tree: SNode = SNodes.loadXmlViaJava(Locations.classpath("dcs-data.mm")).get
     //println(tree)
@@ -80,6 +82,7 @@ class SNodeTest extends org.raisercostin.jedi.impl.SlfLogger {
     assertTrue(menu.isSuccess)
     assertEquals(3, menu.children.all.size)
   }
+    @Ignore
   @Test def readMenuViaBusinessNodeOverJavaXml() {
     val tree: SNode = SNodes.loadFreemind(Locations.classpath("dcs-data.mm")).get
     //println(tree)
@@ -189,6 +192,7 @@ class SNodeTest extends org.raisercostin.jedi.impl.SlfLogger {
     val node:SNode = SNodes.loadYamlViaJson(Locations.memory("").writeContent("title: title1")).get
     assertEquals(Some("title1"),node.title.asOptionString)
   }
+  @Ignore
   @Test def testJsonAsOptionString() {
     val node:RaptureJsonANode = SNodes.loadJson(Locations.memory("").writeContent("""{"title": "title1"}""")).get
     import rapture.json.jsonBackends.spray._

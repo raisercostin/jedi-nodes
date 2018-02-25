@@ -132,7 +132,7 @@ trait SNodeNoDynamic extends JNode { self =>
 
   def asOptionString: Option[String] = as[Option[String]]
   /**As scala node. Can be used from java for more powerful interface.*/
-  def asSNode[T <: SNode](): T = this.asInstanceOf[T]
+  override def asSNode(): SNode = this.asInstanceOf[SNode]
   /**Iterate over child nodes.*/
   def asIterable: Iterable[self.type] = ???
   /**Switch node to a statically checked type.*/
