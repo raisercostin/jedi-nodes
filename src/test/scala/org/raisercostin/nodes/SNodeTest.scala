@@ -172,7 +172,10 @@ class SNodeTest extends org.raisercostin.jedi.impl.SlfLogger {
   }
   @Test def readAll() {
     val node:SNode = SNodes.loadYaml(Locations.classpath("test2-iterate.yaml")).get
-    assertEquals("",node.benefits.children2)
+    assertEquals("List(SyamlANode(SyamlValue(Accurate customer data)), "+
+        "SyamlANode(SyamlValue(Additional care on sensitive data)), "+
+        "SyamlANode(SyamlValue(Minimize security incident)), "+
+        "SyamlANode(SyamlValue(Minimize data breaches)))",node.benefits.asStatic.asIterable.toString)
   }
   @Test def testYamlAsOptionString() {
     val node:SNode = SNodes.loadYaml(Locations.memory("").writeContent("title: title1")).get

@@ -84,7 +84,13 @@ object Syaml extends org.raisercostin.jedi.impl.SlfLogger {
 //  def selectDynamic(name: String): DynamicSyaml = DynamicSyaml(f.get(name))
 //}
 
-trait Syaml extends org.raisercostin.jedi.impl.SlfLogger with Dynamic with Iterable[Syaml] {
+trait Syaml extends org.raisercostin.jedi.impl.SlfLogger with Dynamic with Iterable[Syaml] {self=>
+  /**Adding `with Iterable[SNode]` breaks toString on case classes. So we redefine it.*/
+  override def toString():String = self.getClass match {
+    case t if classOf[Product].isAssignableFrom(t) => ScalaRunTime._toString(self.asInstanceOf[Product])
+    case _ => ???
+  }
+
   type YamlString = String
   implicit def source: SyamlSource
   def name: Option[Any] = None
@@ -190,7 +196,7 @@ case class SyamlPair(key: Any, value: Any)(implicit val source: SyamlSource) ext
   override def children: Iterable[Syaml] = Syaml(value).children
   override def name: Option[Any] = Some(key)
   def valueAsYaml: Syaml = Syaml(value)
-  override def toString: String = s"SyamlPair($key,$value)"
+  //override def toString: String = s"SyamlPair($key,$value)"
 }
 
 /**Defines the source of syaml class to give better explanations about what it didn't worked.*/
@@ -237,6 +243,7 @@ case class SyamlList(value: Seq[_])(implicit val source: SyamlSource) extends Sy
   override def children: Iterable[Syaml] = value.map(x => Syaml(x))
 }
 object SyamlEmpty extends Syaml {
+  final override def toString: String = "SyamlEmpty" 
   implicit val source: SyamlSource = EmptySyamlSource()
   override def getOr(key: String, value: =>Any): Syaml =
     Syaml(value)
@@ -251,6 +258,5 @@ case class SyamlError(error: Throwable)(implicit val source: SyamlSource) extend
   override def value: Any = error
   override def children: Iterable[Syaml] = Seq()
   override def as[T](implicit ct: ClassTag[T]): Try[T] = Failure{error}
-  override def toString: String = ScalaRunTime._toString(this)
   override def get = throw error
 }

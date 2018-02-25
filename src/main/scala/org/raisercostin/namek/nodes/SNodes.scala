@@ -81,21 +81,28 @@ import org.raisercostin.syaml.SyamlError
 import rapture.data.Extractor
 import scala.reflect.ClassTag
 import scala.runtime.ScalaRunTime
-
-trait SNode extends Dynamic with JNode with Iterable[SNode] { self:Product =>
+trait SNode extends Dynamic with SNodeNoDynamic with Iterable[SNode]{ self=>
+  override def isEmpty: Boolean = isFailure
+  override def iterator: Iterator[self.type] = asIterable.iterator
+  
+  //implement Iterable
   /**Adding `with Iterable[SNode]` breaks toString on case classes. So we redefine it.*/
-  override def toString():String = ScalaRunTime._toString(self)
-//type NodeSelector = String
+  override def toString():String = self.getClass match {
+    case t if classOf[Product].isAssignableFrom(t) => ScalaRunTime._toString(self.asInstanceOf[Product])
+    case _ => ???
+  }
+  
+}
+trait SNodeNoDynamic extends JNode { self =>
+
+  //type NodeSelector = String
   //type NodeId = String
   //type ChildNodeType
   def selectDynamic(key: String): self.type = child(key).asInstanceOf[self.type]
-  override def isEmpty: Boolean = isFailure
-  override def iterator: Iterator[self.type] = children2.iterator
   //def nonEmpty: Boolean = isSuccess
   def isFailure: Boolean = !isSuccess
   def isSuccess: Boolean = true
   def id: String /*NodeId*/ = "@" + hashCode
-  def children2: Iterable[self.type] = ???
 
   override def child(key: String): self.type
   //see more https://medium.com/@sinisalouc/overcoming-type-erasure-in-scala-8f2422070d20
@@ -109,16 +116,21 @@ trait SNode extends Dynamic with JNode with Iterable[SNode] { self:Product =>
     runtimeMirror.classSymbol(clazz).toType
   }
   def asType[T](ruType: ru.Type): T = this.asInstanceOf[T]
-  def query(path: String /*NodeSelector*/ *): SNode = {
-    path.foldLeft[SNode](this) {
-      case (x: SNode, key) =>
+  def query(path: String /*NodeSelector*/ *): self.type = {
+    path.foldLeft[self.type](self) {
+      case (x: self.type, key) =>
         println("search " + key + " on " + x.id)
         x.child(key)
     }
   }
 
   def asOptionString: Option[String] = as[Option[String]]
+  /**As scala node. Can be used from java for more powerful interface.*/
   def asSNode[T <: SNode](): T = this.asInstanceOf[T]
+  /**Iterate over child nodes.*/
+  def asIterable: Iterable[self.type] = ???
+  /**Switch node to a statically checked type.*/
+  def asStatic: SNodeNoDynamic = this
 }
 case class ANodeError(ex: Throwable, val path: Vector[Either[Int, String]] = Vector()) extends SNode { self =>
   //type ChildNodeType = ANodeError
@@ -177,7 +189,7 @@ case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
         ???
     }
   }
-  override def children2: Iterable[self2.type] = syaml.children.map(x => SyamlANode(x)).asInstanceOf[Iterable[self2.type]]
+  override def asIterable: Iterable[self2.type] = syaml.children.map(x => SyamlANode(x)).asInstanceOf[Iterable[self2.type]]
 }
 
 case class RaptureXmlNode(xml: rapture.xml.Xml) extends SNode { self =>
@@ -306,7 +318,7 @@ case class RaptureJsonANode(json: Json) extends SNode { self =>
   import rapture.core._
   import rapture.json._
   import rapture.json.jsonBackends.spray.implicitJsonAst
-  override def children2: Iterable[self.type] = json.as[Seq[Json]].map(x => RaptureJsonANode(x)).asInstanceOf[Iterable[self.type]]
+  override def asIterable: Iterable[self.type] = json.as[Seq[Json]].map(x => RaptureJsonANode(x)).asInstanceOf[Iterable[self.type]]
 
   override def as[T](implicit tag: WeakTypeTag[T]): T = tag.tpe match {
     case t @ TypeRef(utype, usymbol, args) if t =:= ru.typeOf[String] =>

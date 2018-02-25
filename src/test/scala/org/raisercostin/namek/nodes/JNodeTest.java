@@ -25,7 +25,8 @@ public class JNodeTest {
   @Test
   public void testInvalidYaml() {
     JNode a = JNodes.loadYaml(Locations.classpath("test1-valid.yaml"));
-    assertEquals("SyamlANode(SyamlMap(SyamlPair(key1,Animals are: dogs, cats)))",a.toString());
+    //assertEquals("SyamlANode(SyamlMap(SyamlPair(key1,Animals are: dogs, cats)))",a.toString());
+    assertEquals("SyamlANode(SyamlMap(Map(key1 -> Animals are: dogs, cats)))",a.toString());
     exception.expect(RuntimeException.class);
     exception.expectMessage("mapping values are not allowed here");
     exception.expectMessage("key1");
