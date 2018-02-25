@@ -169,6 +169,10 @@ class SNodeTest extends org.raisercostin.jedi.impl.SlfLogger {
     assertEquals("value2", all.$something.child1.zipWithIndex.toSeq.apply(1)._1.toStringValue)
     assertEquals("value2", all.something.child1.zipWithIndex.toSeq.apply(1)._1.toStringValue)
   }
+  @Test def readAll() {
+    val node:SNode = SNodes.loadYaml(Locations.classpath("test2-iterate.yaml")).get
+    assertEquals("",node.benefits.children2)
+  }
 }
 
 //Test dynamic access to Syaml

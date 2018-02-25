@@ -76,17 +76,20 @@ object SNodes {
 }
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.raisercostin.syaml.SyamlError
 
-trait SNode extends Dynamic with JNode {
+trait SNode extends Dynamic with JNode with Iterable[SNode] {
   //type NodeSelector = String
   //type NodeId = String
   //type ChildNodeType
   def selectDynamic(key: String): SNode = child(key).asInstanceOf[SNode]
-  def empty: Boolean = isFailure
-  def nonEmpty: Boolean = isSuccess
+  override def isEmpty: Boolean = isFailure
+  //def nonEmpty: Boolean = isSuccess
   def isFailure: Boolean = !isSuccess
   def isSuccess: Boolean = true
   def id: String /*NodeId*/ = "@" + hashCode
+  override def iterator: Iterator[SNode] = children2.iterator
+  def children2: Iterable[SNode] = ???
 
   override def child(key: String): SNode
   override def as[T](clazz: Class[T]): T = {
@@ -319,6 +322,9 @@ trait SimpleANode extends SNode {
 //}
 
 case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
+  if (syaml.isInstanceOf[SyamlError])
+    throw new RuntimeException(s"When reading [${syaml.asInstanceOf[SyamlError].source}]:" + syaml.asInstanceOf[SyamlError].error.getMessage, syaml.asInstanceOf[SyamlError].error)
+  //require(!syaml.isInstanceOf[SyamlError], s"$syaml is an error")
   def child(key: String): SyamlANode = SyamlANode(syaml.selectDynamic(key))
   //def syaml: Syaml = $root.value.asInstanceOf[Syaml]
   //override type T = self2.type
@@ -334,6 +340,7 @@ case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
         ???
     }
   }
+  override def children2: Iterable[SNode] = syaml.children.map(x => SyamlANode(x))
 }
 
 case class RaptureXmlNode(xml: rapture.xml.Xml) extends SNode {
@@ -365,10 +372,10 @@ case class RaptureXmlNode(xml: rapture.xml.Xml) extends SNode {
     xml.as[T]
   }
 }
-object YamlNodeValidator{
-  def from(jsonValidator:JsonNodeValidator):YamlNodeValidator = YamlNodeValidator(jsonValidator) 
+object YamlNodeValidator {
+  def from(jsonValidator: JsonNodeValidator): YamlNodeValidator = YamlNodeValidator(jsonValidator)
 }
-case class YamlNodeValidator(jsonValidator:JsonNodeValidator) extends JNodeValidator {
+case class YamlNodeValidator(jsonValidator: JsonNodeValidator) extends JNodeValidator {
   def validate(node: JNode) =
     jsonValidator.validate(SNodes.yamlToJson(node.asInstanceOf[SyamlANode]).get)
 }
@@ -453,6 +460,10 @@ case class RaptureJsonANode(json: Json) extends SNode {
     //println(json)
     json.as[T]
   }
+  import rapture.core._
+  import rapture.json._
+  import rapture.json.jsonBackends.spray._
+  override def children2: Iterable[SNode] = json.as[Seq[Json]].map(x => RaptureJsonANode(x))
 }
 
 object AllExtractors {

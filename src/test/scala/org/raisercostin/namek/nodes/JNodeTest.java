@@ -2,8 +2,11 @@ package org.raisercostin.namek.nodes;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.raisercostin.jedi.Locations;
+import org.yaml.snakeyaml.scanner.ScannerException;
 
 public class JNodeTest {
 
@@ -17,7 +20,19 @@ public class JNodeTest {
     a.validate(yamlSchemaValidator);
     testJNode(a);
   }
-
+  @Rule
+  public final ExpectedException exception = ExpectedException.none();
+  @Test
+  public void testInvalidYaml() {
+    JNode a = JNodes.loadYaml(Locations.classpath("test1-valid.yaml"));
+    assertEquals("SyamlANode(SyamlMap(SyamlPair(key1,Animals are: dogs, cats)))",a.toString());
+    exception.expect(RuntimeException.class);
+    exception.expectMessage("mapping values are not allowed here");
+    exception.expectMessage("key1");
+    JNode b = JNodes.loadYaml(Locations.classpath("test1-invalid.yaml"));
+    assertEquals("",b.asString());
+  }
+  
   @Test
   public void testJson() {
     RaptureJsonANode a = JNodes.parseJson("{'key1' : 'value1', 'key2' : 'value2'}".replaceAll("'","\""));
