@@ -6,7 +6,7 @@ import org.raisercostin.namek.nodes._
 import rapture.data.MutableCell
 import scala.Vector
 
-case class JavaXmlNode(value:org.w3c.dom.Node) extends SimpleANode with SNode {self=>
+case class JavaXmlNode(value:org.w3c.dom.Node) extends SNode {self=>
   import JavaXmlNode._
   import javax.xml.xpath.XPathFactory
   import org.w3c.dom.NodeList

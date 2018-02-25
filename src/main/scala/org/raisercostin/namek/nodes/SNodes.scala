@@ -82,13 +82,15 @@ import rapture.data.Extractor
 import scala.reflect.ClassTag
 import scala.runtime.ScalaRunTime
 
-trait SNode extends Dynamic with JNode /*with Iterable[SNode]*/ { self =>
+trait SNode extends Dynamic with JNode with Iterable[SNode] { self:Product =>
+  /**Adding `with Iterable[SNode]` breaks toString on case classes. So we redefine it.*/
+  override def toString():String = ScalaRunTime._toString(self)
 //type NodeSelector = String
   //type NodeId = String
   //type ChildNodeType
   def selectDynamic(key: String): self.type = child(key).asInstanceOf[self.type]
-  def isEmpty: Boolean = isFailure
-  def iterator: Iterator[self.type] = children2.iterator
+  override def isEmpty: Boolean = isFailure
+  override def iterator: Iterator[self.type] = children2.iterator
   //def nonEmpty: Boolean = isSuccess
   def isFailure: Boolean = !isSuccess
   def isSuccess: Boolean = true
@@ -137,7 +139,7 @@ case class ANodeError(ex: Throwable, val path: Vector[Either[Int, String]] = Vec
   }
 }
 
-trait SimpleANode extends SNode {
+//trait SimpleANode extends SNode {
   //  override def query(path: NodeSelector*): ANode = {
   //    path.foldLeft[ANode](this) {
   //      case (x: ANode, key) =>
@@ -145,7 +147,7 @@ trait SimpleANode extends SNode {
   //        x.queryOne(key)
   //    }
   //  }
-}
+//}
 //
 //case class SimpleNodeList(all: Stream[ANode]) extends ANode {
 //  override def isSuccess: Boolean = true
@@ -179,7 +181,6 @@ case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
 }
 
 case class RaptureXmlNode(xml: rapture.xml.Xml) extends SNode { self =>
-  override def toString():String = ScalaRunTime._toString(this)//s"RaptureJsonANode(${json.toBareString})"
   println(s"loaded $this")
   def child(key: String): self.type = RaptureXmlNode(xml.selectDynamic(key)).asInstanceOf[self.type]
   override def asType[T](t: ru.Type): T = {
@@ -249,7 +250,6 @@ case class JsonNodeValidator(schema: JsonSchema) extends JNodeValidator {
 }
 
 case class RaptureJsonANode(json: Json) extends SNode { self =>
-  override def toString():String = ScalaRunTime._toString(this)//s"RaptureJsonANode(${json.toBareString})"
   def child(key: String): self.type = RaptureJsonANode(json.selectDynamic(key)).asInstanceOf[self.type]
   //def json:Json = $root.value.asInstanceOf[Json]
   //override type T = RaptureJsonANode
@@ -354,7 +354,7 @@ object AllExtractors {
 
 /*-------------------------------------------------------------------------------------------------------*/
 @deprecated("too simple xpath selections")
-case class ScalaElemNode(value: Node) extends SimpleANode with SNode { self =>
+case class ScalaElemNode(value: Node) extends SNode { self =>
   //  override def id = Option(value.\@("id")).filter(_.nonEmpty).getOrElse(super.id)
   override def child(key: String /*NodeSelector*/ ): self.type = Try { one(value.\(key)) }.
     map(x => ScalaElemNode(x)).recover { case x: Throwable => ANodeError(new IllegalArgumentException(s"When searching for child [$key]: " + x.getMessage, x)) }.get.asInstanceOf[self.type]
@@ -371,11 +371,7 @@ case class ScalaElemNode(value: Node) extends SimpleANode with SNode { self =>
 /*-------------------------------------------------------------------------------------------------------*/
 
 /*-------------------------------------------------------------------------------------------------------*/
-case class MindMapJavaXmlNode(node: JavaXmlNode) extends SimpleANode with SNode { self =>
+case class MindMapJavaXmlNode(node: JavaXmlNode) extends SNode { self =>
   override def child(key: String): self.type = MindMapJavaXmlNode(node.queryOne("//node[@TEXT='" + key + "']").asInstanceOf[JavaXmlNode]).asInstanceOf[self.type]
   def all: Stream[SNode] = ???
-}
-object `package`{
-  import scala.language.implicitConversions
-  implicit def toIterable[T<:SNode](node:T):Iterable[T] = node.children
 }
