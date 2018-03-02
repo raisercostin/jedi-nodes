@@ -84,11 +84,18 @@ object Syaml extends org.raisercostin.jedi.impl.SlfLogger {
 //  def selectDynamic(name: String): DynamicSyaml = DynamicSyaml(f.get(name))
 //}
 
-trait Syaml extends org.raisercostin.jedi.impl.SlfLogger with Dynamic with Iterable[Syaml] {self=>
+trait Syaml extends org.raisercostin.jedi.impl.SlfLogger with Dynamic with Iterable[Syaml] { self =>
   /**Adding `with Iterable[SNode]` breaks toString on case classes. So we redefine it.*/
-  override def toString():String = self.getClass match {
+  override def toString(): String = self.getClass match {
     case t if classOf[Product].isAssignableFrom(t) => ScalaRunTime._toString(self.asInstanceOf[Product])
-    case _ => ???
+    case _                                         => ???
+  }
+
+  def explain[T](key:String, keys:Iterable[Any]): PartialFunction[Throwable, Try[T]] = { x =>
+    x match {
+      case t: Throwable =>
+        Failure(new IllegalArgumentException(s"Couldn't find value for key [$key] in [$source]. The keys are [${keys.map(_.toString.take(20)).mkString(",")}]", t))
+    }
   }
 
   type YamlString = String
@@ -105,19 +112,19 @@ trait Syaml extends org.raisercostin.jedi.impl.SlfLogger with Dynamic with Itera
   override def nonEmpty: Boolean = isSuccess
   def isSuccess: Boolean = true
   def isFailure: Boolean = !isSuccess
-  
+
   //navigability
   @deprecated("use get(key).asString") def getString(key: String): Try[String] = get(key).asString
   def children: Iterable[Syaml]
   def get(key: String): Syaml
-  def or(key: String, value: =>Syaml): Syaml = {
+  def or(key: String, value: => Syaml): Syaml = {
     val res = get(key)
     if (res.isFailure)
       value
     else
       res
   }
-  def getOr(key: String, value: =>Any): Syaml = or(key,Syaml(value))
+  def getOr(key: String, value: => Any): Syaml = or(key, Syaml(value))
   def query[T](keys: String): Syaml = query(keys.split("\\."): _*)
   def query[T](keys: String*): Syaml = {
     logger.debug(s"keys: [${keys.mkString(",")}]")
@@ -139,7 +146,7 @@ trait Syaml extends org.raisercostin.jedi.impl.SlfLogger with Dynamic with Itera
   //just type conversion - shouldn't be needed
   def asString = as[String]
   def asInt = as[Int]
-  def asBoolean:Try[Boolean] = as[Boolean]
+  def asBoolean: Try[Boolean] = as[Boolean]
   def asDate = as[DateTime]
   def asMap = as[Map[_, _]]
   def asList[T]: Try[List[T]] = as[List[T]]
@@ -150,14 +157,14 @@ trait Syaml extends org.raisercostin.jedi.impl.SlfLogger with Dynamic with Itera
 
   //extract value
   def value: Any
-  def valueOrElse[T](alternative: =>T)(implicit ct: ClassTag[T]): T = if (isSuccess) value.asInstanceOf[T] else alternative
+  def valueOrElse[T](alternative: => T)(implicit ct: ClassTag[T]): T = if (isSuccess) value.asInstanceOf[T] else alternative
   def valueToOption: Option[Any] = if (isSuccess) Some(value) else None
   @deprecated def descriptionIfNotExists: String = if (isSuccess) "" else s"You can add a value in $source"
   @deprecated("use valueToOption") def toOption: Option[Any] = valueToOption
   @deprecated("use value.toString") def toStringValue: String = value.toString
 
   //tostring
-  @deprecated("use toYamlString") def dump:YamlString = toYamlString
+  @deprecated("use toYamlString") def dump: YamlString = toYamlString
   def toYamlString: YamlString = {
     val yamlString = new org.yaml.snakeyaml.Yaml().dump(toJavaValue(value))
     //yamlString
@@ -216,13 +223,14 @@ case class FromParentSyaml(parent: SyamlSource, location: String) extends SyamlS
 
 case class SyamlMap(value: ListMap[AnyRef, _])(implicit val source: SyamlSource) extends Syaml {
   override def get(key: String): Syaml = Syaml {
-    Try { value.get(key).get }.
-      recoverWith {
-        case t: Throwable =>
-          Failure(new IllegalArgumentException(s"Couldn't find value for key [$key] in [$source]. The keys are [${value.keys.map(_.toString.take(20)).mkString(",")}]"
-          , t))
-      }.get
+    Try { value.get(key).get }.recoverWith(explain(key,value.keys)).get
+    //        case t: Throwable =>
+    //          Failure(new IllegalArgumentException(s"Couldn't find value for key [$key] in [$source]. The keys are [${value.keys.map(_.toString.take(20)).mkString(",")}]"
+    //          , t))
+    //      }.get
+
   }
+
   override def children: Iterable[Syaml] = value.map { case (key, y) => Syaml(key -> y) }
   def withChild(key: AnyRef, newValue: Any): SyamlMap = SyamlMap(value + (key -> newValue))(ChangedSyamlSource(source, key, newValue))
 }
@@ -232,20 +240,23 @@ case class SyamlList(value: Seq[_])(implicit val source: SyamlSource) extends Sy
       recover { case e: Throwable => throw new IllegalArgumentException(s"[$key] is not a index value.", e) }.
       map { index => value(index) }.
       recoverWith { case e: Throwable => Try { findChild(key) } }.
+      recoverWith { explain(key,value) }.
       get)
 
   def findChild(key: String): Any = {
     value.collectFirst {
       case s: WrappedMap[String, _] if s.size == 1 && s.contains(key) =>
         s.get(key).get
+      case s:LinkedHashMap[String,_] if s.size == 1 && s.contains(key) =>
+        s.get(key).get
     }.get
   }
   override def children: Iterable[Syaml] = value.map(x => Syaml(x))
 }
 object SyamlEmpty extends Syaml {
-  final override def toString: String = "SyamlEmpty" 
+  final override def toString: String = "SyamlEmpty"
   implicit val source: SyamlSource = EmptySyamlSource()
-  override def getOr(key: String, value: =>Any): Syaml =
+  override def getOr(key: String, value: => Any): Syaml =
     Syaml(value)
   override def get(key: String): Syaml = this
   override def value: Any = ""
@@ -257,6 +268,7 @@ case class SyamlError(error: Throwable)(implicit val source: SyamlSource) extend
   override def get(key: String): Syaml = this
   override def value: Any = error
   override def children: Iterable[Syaml] = Seq()
-  override def as[T](implicit ct: ClassTag[T]): Try[T] = Failure{error}
+  override def as[T](implicit ct: ClassTag[T]): Try[T] = Failure { error }
   override def get = throw error
+  override def toYamlString: YamlString = throw error
 }

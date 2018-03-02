@@ -90,7 +90,7 @@ public class JNodeTest {
     testJNode(a);
     assertEquals(Optional.empty(),a.child("key3").asOptionalString());
     JNode c = a.addChildToJNode("key3",5);
-    assertEquals(Optional.of(5),b.child("key3").asOptionalString());
+    assertEquals(Optional.of(5),c.child("key3").asOptionalString());
   }
 
   private void testJNode(JNode node) {

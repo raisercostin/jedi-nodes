@@ -191,8 +191,8 @@ case class ANodeError(ex: Throwable, val path: Vector[Either[Int, String]] = Vec
 //}
 
 case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
-  if (syaml.isInstanceOf[SyamlError])
-    throw new RuntimeException(s"When reading [${syaml.asInstanceOf[SyamlError].source}]:" + syaml.asInstanceOf[SyamlError].error.getMessage, syaml.asInstanceOf[SyamlError].error)
+//  if (syaml.isInstanceOf[SyamlError])
+//    throw new RuntimeException(s"When reading [${syaml.asInstanceOf[SyamlError].source}]:" + syaml.asInstanceOf[SyamlError].error.getMessage, syaml.asInstanceOf[SyamlError].error)
   //require(!syaml.isInstanceOf[SyamlError], s"$syaml is an error")
   def child(key: String): self2.type = SyamlANode(syaml.selectDynamic(key)).asInstanceOf[self2.type]
   //def syaml: Syaml = $root.value.asInstanceOf[Syaml]
@@ -205,7 +205,8 @@ case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
   override def asType[T](tag: ru.Type): T = {
     tag match {
       case t if t =:= ru.typeOf[String] =>
-        syaml.value.asInstanceOf[T]
+        //syaml.value.asInstanceOf[T]
+        syaml.asString.get.asInstanceOf[T]
       case _ =>
         ???
     }

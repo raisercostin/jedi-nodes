@@ -3,7 +3,7 @@
 ## Status
 [![Download](https://api.bintray.com/packages/raisercostin/maven/jedi-nodes/images/download.svg)](https://bintray.com/raisercostin/maven/jedi-nodes/_latestVersion)
 [![Build Status](https://travis-ci.org/raisercostin/jedi-nodes.svg?branch=master)](https://travis-ci.org/raisercostin/jedi-nodes)
-[![Codacy Badge](https://www.codacy.com/project/badge/5cc4b6b21f694317ab8beec05342c7b5)](https://www.codacy.com/app/raisercostin/jedi-nodes)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8bb2b84c03de4e6f8de91e594bfe5929)](https://www.codacy.com/app/raisercostin/jedi-nodes)
 [![codecov](https://codecov.io/gh/raisercostin/jedi-nodes/branch/master/graph/badge.svg)](https://codecov.io/gh/raisercostin/jedi-nodes)
 <!--[![codecov.io](http://codecov.io/github/raisercostin/jedi-nodes/coverage.svg?branch=master)](http://codecov.io/github/raisercostin/jedi-nodes?branch=master)-->
 
