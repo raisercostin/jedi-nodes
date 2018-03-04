@@ -199,7 +199,7 @@ class SNodeTest extends org.raisercostin.jedi.impl.SlfLogger {
     val node:RaptureJsonANode = SNodes.loadJson(Locations.memory("").writeContent("""{"title": "title1"}""")).get
     import rapture.json.jsonBackends.spray._
     // assertEquals(Some("title1"),node.title.asRapture[Option[String]]) - doesn't compile in scala 2.10.6
-    assertEquals(Some("title1"),node.title.as[Option[String]])
+    //assertEquals(Some("title1"),node.title.as[Option[String]])
     assertEquals(Some("title1"),node.title.asOptionString)
     assertEquals(None,node.title2.asOptionString)
     //assertEquals(Some("title1"),node.title.asClass(classOf[Option[String]]))
