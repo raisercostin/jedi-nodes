@@ -135,6 +135,8 @@ trait SNodeNoDynamic extends JNode { self =>
   }
 
   def asOptionString: Option[String] = as[Option[String]]
+  def asOptionBoolean: Option[Boolean] = as[Option[Boolean]]
+  def asOptionInt: Option[Int] = as[Option[Int]]
   /**As scala node. Can be used from java for more powerful interface.*/
   override def asSNode(): SNode = this.asInstanceOf[SNode]
   /**Iterate over child nodes.*/
@@ -220,7 +222,22 @@ case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
     case t @ TypeRef(utype, usymbol, args) if t =:= ru.typeOf[Option[String]] =>
       println(List(utype, usymbol, args).mkString(","))
       syaml.valueToOption.asInstanceOf[T]
+    case t @ TypeRef(utype, usymbol, args) if t =:= ru.typeOf[Option[Boolean]] =>
+      println(List(utype, usymbol, args).mkString(","))
+      if(syaml.value.isInstanceOf[Boolean])
+        syaml.asBoolean.toOption.asInstanceOf[T]
+      else
+        Option.empty[Boolean].asInstanceOf[T]
+    case t @ TypeRef(utype, usymbol, args) if t =:= ru.typeOf[Option[Int]] =>
+      println(List(utype, usymbol, args).mkString(","))
+      if(syaml.value.isInstanceOf[Int])
+        syaml.asInt.toOption.asInstanceOf[T]
+      else
+        Option.empty[Boolean].asInstanceOf[T]
     case t @ TypeRef(utype, usymbol, args) =>
+      //import com.twitter.bijection._
+      //import purecsv.safe._
+      //CSVReader[Boolean].readCSVFromString("alice,1")
       println(List(utype, usymbol, args).mkString(","))
       throw new RuntimeException(s"Can't convert [$syaml] to " + List(utype, usymbol, args).mkString(","))
   }
@@ -229,7 +246,7 @@ case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
   override def addChildToJNode(key:String,value:Any):JNode = addChild(key,value)
     
   override def addChild(key:String,value:Any):SNode = 
-    SyamlANode(syaml.asSyamlMap.withChild(key,value))
+    SyamlANode(syaml.withChild(key,value))
 }
 
 case class RaptureXmlNode(xml: rapture.xml.Xml) extends SNode { self =>

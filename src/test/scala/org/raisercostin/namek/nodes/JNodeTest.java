@@ -11,6 +11,8 @@ import org.junit.rules.ExpectedException;
 import org.raisercostin.jedi.Locations;
 import org.yaml.snakeyaml.scanner.ScannerException;
 
+import scala.Option;
+
 public class JNodeTest {
 
   @Rule
@@ -91,6 +93,13 @@ public class JNodeTest {
     assertEquals(Optional.empty(),a.child("key3").asOptionalString());
     JNode c = a.addChildToJNode("key3",5);
     assertEquals(Optional.of(5),c.child("key3").asOptionalString());
+  }
+
+  @Test
+  public void testYamlBoolean() {
+    SNode a = (SNode) JNodes.parseYamlViaSyaml("key1 : value1\nkey2 : value2");
+    assertEquals("None",a.asOptionBoolean().toString());
+    assertEquals("None",a.asOptionInt().toString());
   }
 
   private void testJNode(JNode node) {

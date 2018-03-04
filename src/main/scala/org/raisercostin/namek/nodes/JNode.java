@@ -2,7 +2,7 @@ package org.raisercostin.namek.nodes;
 
 import java.util.Optional;
 
-public interface JNode{
+public interface JNode {
   default String asString() {
     return asClass(String.class);
   }   
@@ -12,7 +12,15 @@ public interface JNode{
   
   <T> T asClass(Class<T> clazz);
   SNode asSNode();
-  Optional<String> asOptionalString();
+  default JNodeValue asValue() {
+    return asClass(JNodeValue.class);
+  }
+  default Optional<JNodeValue> asOptionalValue() {
+    return Optional.ofNullable(asValue());
+  }
+  default Optional<String> asOptionalString(){
+    return asOptionalValue().flatMap(x -> x.asOptionalString());
+  }
 
   /**Checks that the node is valid. For json it might use http://json-schema.org, for xml xsd or xslt. The node could have a default validator.*/
   default void validate() {

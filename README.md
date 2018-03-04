@@ -8,7 +8,7 @@
 <!--[![codecov.io](http://codecov.io/github/raisercostin/jedi-nodes/coverage.svg?branch=master)](http://codecov.io/github/raisercostin/jedi-nodes?branch=master)-->
 
 ## Description
-Scala (and java) fluent interface to json, xml, hocon, conf, properties, freemind.
+Scala (and java) fluent interface to yaml/yml, json, xml, hocon, conf, properties, freemind, csv, folders.
 There is an `SNode` entity that is used as the common entity
 
 ## Features
@@ -27,6 +27,8 @@ There is an `SNode` entity that is used as the common entity
   - hocon
     - typesafe config library
   - java properties
+  - csv
+    - https://github.com/melrief/PureCSV
 - add extractors (as visitors?)
   - jquery/css selectors
   - xpath
@@ -69,12 +71,39 @@ For more samples see [LocationsTest.scala](src/test/scala/org/raisercostin/util/
  resolvers += "raisercostin repository" at "http://dl.bintray.com/raisercostin/maven"
  ```
 
-# Usage
+# Design
 
 Projects that are using jedi-node:
- 
+
 ## Backlog
 - see HierarchicalMultimap in jedi-io
+
+## Similar technologies
+- data access
+  - typesafe's config library (hierarchical map)
+  - rapture's dynamic field access
+  - purecsv's conversion to scala objects
+  - jijection's conversion
+- data storage (serialization/deserialization, marshaling/unmarshalling, pickling/unpickling, encode/decode - shapeless)
+  - references
+    - https://en.wikipedia.org/wiki/Comparison_of_data_serialization_formats
+    - https://stackoverflow.com/questions/15699197/yaml-vs-gpb-vs-json-vs-xml-which-is-best-suited-to-which-circumstances
+  - json
+  - yaml
+  - hocon
+  - xml
+  - csv
+  - protobuf
+- libraries
+  - purecsv
+    - read objects from csv without converters: https://github.com/melrief/PureCSV
+    - is using shapeless
+  - pickling
+    - https://github.com/scala/pickling  
+  - rapture (json,xml formats)
+    - https://github.com/propensive/rapture
+  - bijection
+    - https://github.com/twitter/bijection
 
 ## Hierarchical Map
 A container of keys in form a.b.c is needed.

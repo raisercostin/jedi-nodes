@@ -60,7 +60,14 @@ libraryDependencies += "com.networknt" % "json-schema-validator" % "0.1.7"
 //utils:yaml
 libraryDependencies += "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % "2.9.4"
 
+//utils:config
 libraryDependencies += "com.typesafe" % "config" % "1.3.1"
+
+//utils:csv
+//libraryDependencies += "com.github.melrief" %% "purecsv" % "0.1.1"
+
+//utils:
+libraryDependencies += "com.twitter" %% "bijection-json" % "0.9.5"
 
 resolvers += "raisercostin resolver" at "http://dl.bintray.com/raisercostin/maven"
 

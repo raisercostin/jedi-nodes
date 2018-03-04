@@ -30,8 +30,8 @@ object Syaml extends org.raisercostin.jedi.impl.SlfLogger {
         SyamlMap(ListMap() ++ m)
       case l: Seq[AnyRef] =>
         SyamlList(l)
-      case (x, y) =>
-        SyamlPair(x, y)
+      case x: Tuple2[AnyRef,_] =>
+        SyamlPair(x._1, x._2)
       case e: Throwable =>
         SyamlError(e)
       case s: String   => SyamlValue(s)
@@ -192,18 +192,21 @@ trait Syaml extends org.raisercostin.jedi.impl.SlfLogger with Dynamic with Itera
 
     yamlToJava(obj)
   }
+  
+  def withChild(key: AnyRef, newValue: Any): SyamlMap = ???
 }
 case class SyamlValue(value: Any)(implicit val source: SyamlSource) extends Syaml {
   override def get(key: String): Syaml = Syaml(new RuntimeException(s"This is a value of type ${getClass.getName}. Cannot get something by key [$key]. The value is ${value.toString.take(100)}"))
   override def children: Iterable[Syaml] = Seq()
 }
-case class SyamlPair(key: Any, value: Any)(implicit val source: SyamlSource) extends Syaml {
+case class SyamlPair(key: AnyRef, value: Any)(implicit val source: SyamlSource) extends Syaml {
   override def get(key: String): Syaml = //Syaml(new RuntimeException(s"This is a value of type ${getClass.getName}. Cannot get something by key [$key]. The value is ${value.toString.take(100)}"))
     Syaml(value).get(key)
   override def children: Iterable[Syaml] = Syaml(value).children
   override def name: Option[Any] = Some(key)
   def valueAsYaml: Syaml = Syaml(value)
   //override def toString: String = s"SyamlPair($key,$value)"
+  override def withChild(key: AnyRef, newValue: Any): SyamlMap = SyamlMap(ListMap[AnyRef,Any](this.key ->value) + (key -> newValue))(ChangedSyamlSource(source, key, newValue))
 }
 
 /**Defines the source of syaml class to give better explanations about what it didn't worked.*/
@@ -232,7 +235,7 @@ case class SyamlMap(value: ListMap[AnyRef, _])(implicit val source: SyamlSource)
   }
 
   override def children: Iterable[Syaml] = value.map { case (key, y) => Syaml(key -> y) }
-  def withChild(key: AnyRef, newValue: Any): SyamlMap = SyamlMap(value + (key -> newValue))(ChangedSyamlSource(source, key, newValue))
+  override def withChild(key: AnyRef, newValue: Any): SyamlMap = SyamlMap(value + (key -> newValue))(ChangedSyamlSource(source, key, newValue))
 }
 case class SyamlList(value: Seq[_])(implicit val source: SyamlSource) extends Syaml {
   override def get(key: String): Syaml = Syaml(
