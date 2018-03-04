@@ -216,20 +216,20 @@ case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
 
   override def as[T](implicit tag: WeakTypeTag[T]): T = tag.tpe match {
     case t @ TypeRef(utype, usymbol, args) if t =:= ru.typeOf[String] =>
-      println(List(utype, usymbol, args).mkString(","))
+      //println(List(utype, usymbol, args).mkString(","))
       //asRapture[String].asInstanceOf[T]
       syaml.valueToOption.get.asInstanceOf[T]
     case t @ TypeRef(utype, usymbol, args) if t =:= ru.typeOf[Option[String]] =>
-      println(List(utype, usymbol, args).mkString(","))
+      //println(List(utype, usymbol, args).mkString(","))
       syaml.valueToOption.asInstanceOf[T]
     case t @ TypeRef(utype, usymbol, args) if t =:= ru.typeOf[Option[Boolean]] =>
-      println(List(utype, usymbol, args).mkString(","))
+      //println(List(utype, usymbol, args).mkString(","))
       if(syaml.value.isInstanceOf[Boolean])
         syaml.asBoolean.toOption.asInstanceOf[T]
       else
         Option.empty[Boolean].asInstanceOf[T]
     case t @ TypeRef(utype, usymbol, args) if t =:= ru.typeOf[Option[Int]] =>
-      println(List(utype, usymbol, args).mkString(","))
+      //println(List(utype, usymbol, args).mkString(","))
       if(syaml.value.isInstanceOf[Int])
         syaml.asInt.toOption.asInstanceOf[T]
       else
@@ -238,7 +238,7 @@ case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
       //import com.twitter.bijection._
       //import purecsv.safe._
       //CSVReader[Boolean].readCSVFromString("alice,1")
-      println(List(utype, usymbol, args).mkString(","))
+      //println(List(utype, usymbol, args).mkString(","))
       throw new RuntimeException(s"Can't convert [$syaml] to " + List(utype, usymbol, args).mkString(","))
   }
   override def asIterable: Iterable[self2.type] = syaml.children.map(x => SyamlANode(x)).asInstanceOf[Iterable[self2.type]]
