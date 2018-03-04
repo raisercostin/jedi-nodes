@@ -143,7 +143,7 @@ trait SNodeNoDynamic extends JNode { self =>
   def asIterable: Iterable[self.type] = ???
   /**Switch node to a statically checked type.*/
   def asStatic: SNodeNoDynamic = this
-  def asOptionalString(): java.util.Optional[String] = java.util.Optional.ofNullable(asOptionString.getOrElse(null))
+  override def asOptionalString(): java.util.Optional[String] = java.util.Optional.ofNullable(asOptionString.getOrElse(null))
 //  @deprecated def get(key: String): self.type = child(key)
 //  def or(key: String, value: =>self.type): self.type = {
 //    val res = child(key)
