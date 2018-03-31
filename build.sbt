@@ -1,5 +1,6 @@
-organization := "org.raisercostin"
 name := "jedi-nodes"
+
+organization := "org.raisercostin"
 description := "Scala (and java) fluent interface to json, xml, hocon, conf, properties, freemind."
 homepage := Some(url(s"https://github.com/raisercostin/"+name.value))
 
@@ -171,11 +172,11 @@ publishMavenStyle := true
 bintrayPackageLabels := Seq("scala", "io", "nio", "file", "path", "stream", "writer")
 
 //release plugin
-//version is commented since the version is in version.sbt
 releaseCrossBuild := true
 
 //bintray&release
 //bintray doesn't like snapshot versions - https://github.com/softprops/bintray-sbt/issues/12
+//version is commented since the version is in version.sbt
 releaseNextVersion := { ver => sbtrelease.Version(ver).map(_.bumpMinor.string).getOrElse(sbtrelease.versionFormatError) }
 
 //coverage: https://github.com/scoverage/sbt-scoverage and https://github.com/non/spire/blob/master/.travis.yml

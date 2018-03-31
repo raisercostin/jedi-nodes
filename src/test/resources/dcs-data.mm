@@ -1,7 +1,7 @@
-<map version="1.1.0">
+<map version="1.0.1">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
-<node CREATED="1504367316667" ID="ID_1505291053" MODIFIED="1504367330046" TEXT="dcs">
-<node CREATED="1503740782419" ID="ID_145783068" MODIFIED="1504367357594" POSITION="right" TEXT="menu">
+<node CREATED="1504367316667" ID="ID_1505291053" MODIFIED="1520438933223" TEXT="dcs">
+<node CREATED="1503740782419" FOLDED="true" ID="ID_145783068" MODIFIED="1504367357594" POSITION="right" TEXT="menu">
 <node CREATED="1503740790970" ID="ID_713288659" MODIFIED="1503827962568" TEXT="Home/About Us">
 <node CREATED="1503827962560" ID="ID_389326085" MODIFIED="1503827962560" TEXT="">
 <node CREATED="1503762056740" ID="ID_228410197" MODIFIED="1503762060093" TEXT="Short intro"/>
@@ -229,7 +229,7 @@
 <node CREATED="1503762285898" ID="ID_1091048197" MODIFIED="1503762287811" TEXT="technologies"/>
 </node>
 </node>
-<node CREATED="1505521909403" ID="ID_524053278" MODIFIED="1505521911429" POSITION="right" TEXT="brochure">
+<node CREATED="1505521909403" FOLDED="true" ID="ID_524053278" MODIFIED="1505521911429" POSITION="right" TEXT="brochure">
 <node CREATED="1505521912179" ID="ID_526551822" MODIFIED="1505521912179" TEXT="# About us">
 <node CREATED="1505521912180" ID="ID_1005973792" MODIFIED="1505521912180" TEXT="Successful Enterprise is Agile."/>
 <node CREATED="1505521912182" ID="ID_690556460" MODIFIED="1505521912182" TEXT="We are an agile company focused on services and solutions for the enterprise in the strategic area of Integration, Security and Identity Management."/>
@@ -301,6 +301,363 @@
 <node CREATED="1505521912282" ID="ID_1976303800" MODIFIED="1505521912282" TEXT="We are using agile methodologies and practices including Test Driven Development that allow us to deliver exceptional high quality Java projects."/>
 <node CREATED="1505521912284" ID="ID_153146656" MODIFIED="1505521912284" TEXT="We are strong supporters of Continuous Delivery: the ability to get changes of all types &#x2014; including new features, configuration changes, bug fixes and experiments &#x2014; into production, or into the hands of users, safely and quickly in a sustainable way."/>
 <node CREATED="1505521912291" ID="ID_1917445478" MODIFIED="1505521912291" TEXT="Our goal is to make deployments &#x2014; whether of a large-scale distributed system, a complex production environment, an embedded system, or an app &#x2014; predictable, routine affairs that can be performed on demand."/>
+</node>
+</node>
+<node CREATED="1520438921373" FOLDED="true" ID="ID_690139427" MODIFIED="1520438931081" POSITION="right" TEXT="prj-garrett">
+<node CREATED="1520438934591" ID="ID_550308836" MODIFIED="1520446171223" TEXT="Commercial Offer">
+<node COLOR="#338800" CREATED="1520449429130" ID="ID_1703240108" MODIFIED="1520541815472" TEXT="Is best to consider that we have 3 almost independent projects."/>
+<node CREATED="1520438961741" ID="ID_73849839" MODIFIED="1520540949953" STYLE="fork" TEXT="activity monitor">
+<font BOLD="true" NAME="SansSerif" SIZE="16"/>
+<node CREATED="1520449497405" ID="ID_880879059" MODIFIED="1520540949952" TEXT="There are two options for this:"/>
+<node CREATED="1520438969634" ID="ID_1968632039" MODIFIED="1520540949952" TEXT="op1 - skype monitoring">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<node CREATED="1520540814753" ID="ID_265420851" MODIFIED="1520540949952" TEXT="features">
+<node CREATED="1520438974046" ID="ID_882376632" MODIFIED="1520540949952" TEXT="Monitor skype status"/>
+</node>
+<node CREATED="1520540822030" ID="ID_7722587" MODIFIED="1520540949952" TEXT="evaluation">
+<node CREATED="1520438993319" ID="ID_766530242" MODIFIED="1520540949952" TEXT="Is risky: skype changes api often and is closed, even now there is no published API to detect this.">
+<node CREATED="1520439050234" ID="ID_1232271071" LINK="https://support.skype.com/en/faq/FA561/can-i-monitor-a-member-s-usage-with-skype-manager" MODIFIED="1520540949952" TEXT="https://support.skype.com/en/faq/FA561/can-i-monitor-a-member-s-usage-with-skype-manager"/>
+</node>
+<node CREATED="1520439087583" ID="ID_1214440091" MODIFIED="1520540949952" TEXT="Skype for business (previous Lync)">
+<node CREATED="1520439078746" ID="ID_24998496" MODIFIED="1520540949952" TEXT="Tag for Status Change Alerts."/>
+<node CREATED="1520439066332" ID="ID_1149405192" LINK="https://support.office.com/en-us/article/tell-me-when-someone-s-status-changes-042a13d8-c815-4101-8b41-1e141b6bf6e9" MODIFIED="1520540949952" TEXT="https://support.office.com/en-us/article/tell-me-when-someone-s-status-changes-042a13d8-c815-4101-8b41-1e141b6bf6e9"/>
+</node>
+</node>
+<node CREATED="1520540890001" ID="ID_1676706663" MODIFIED="1520540949953" TEXT="conclusion">
+<node CREATED="1520540893085" ID="ID_1962778989" MODIFIED="1520540949953" TEXT="There is a chance this can&apos;t be done or if done just for a short time till they will not support the feature again."/>
+</node>
+</node>
+<node CREATED="1520438972296" ID="ID_969673119" MODIFIED="1520540949953" TEXT="op2 - custom monitoring app">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<node CREATED="1520438985527" ID="ID_1687481247" MODIFIED="1520540949953" TEXT="We will create a custom app installable on windows that will report the presence in fhe office."/>
+<node CREATED="1520449249820" ID="ID_1427276457" MODIFIED="1520540949953" TEXT="conditions">
+<node CREATED="1520445910804" ID="ID_733922524" MODIFIED="1520540949953" TEXT="type">
+<node CREATED="1520445912103" ID="ID_1379342591" MODIFIED="1520540949953" TEXT="Fixed Price"/>
+</node>
+<node CREATED="1520445903416" ID="ID_1106082449" MODIFIED="1520540949953" TEXT="time">
+<node CREATED="1520446655265" ID="ID_1425405501" MODIFIED="1520540949953" TEXT="1 month"/>
+</node>
+<node CREATED="1520445901769" ID="ID_1939600251" MODIFIED="1520540949953" TEXT="price">
+<node CREATED="1520446845401" ID="ID_72380770" MODIFIED="1520540949953" TEXT="8000 euro"/>
+</node>
+<node CREATED="1520448900957" ID="ID_1563837329" MODIFIED="1520540949953" TEXT="method">
+<node CREATED="1520448929246" ID="ID_1688795917" MODIFIED="1520540949953" TEXT="1 developer"/>
+</node>
+<node CREATED="1520445904430" ID="ID_235575369" MODIFIED="1520540949953" TEXT="features">
+<node CREATED="1520449305480" ID="ID_903997154" MODIFIED="1520540949953" TEXT="Detect mouse activity and report it."/>
+<node CREATED="1520449317088" ID="ID_1004759839" MODIFIED="1520540949953" TEXT="Server app to display the list of all active users in a specific day."/>
+</node>
+</node>
+</node>
+</node>
+<node CREATED="1520438940332" ID="ID_1028233066" MODIFIED="1520540719557" TEXT="docLess">
+<font BOLD="true" NAME="SansSerif" SIZE="16"/>
+<node CREATED="1520449100808" ID="ID_1444076761" MODIFIED="1520540310221" TEXT="There are two options here depending on where the solution is hosted."/>
+<node CREATED="1520539244960" ID="ID_33176395" MODIFIED="1520540681432" TEXT="op1 - On Premise">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<node CREATED="1520539264281" ID="ID_1084223662" MODIFIED="1520539447751" TEXT="price">
+<node CREATED="1520539447746" ID="ID_1388776820" MODIFIED="1520540181244" TEXT="lifetime license">
+<node CREATED="1520539165704" ID="ID_1970761515" MODIFIED="1520540021150" TEXT="85 euro/user = 104 usd/user - lifetime">
+<node CREATED="1520539269409" ID="ID_112345696" MODIFIED="1520539355971" TEXT="600 users = 49200 euro = 60540 usd"/>
+</node>
+</node>
+<node CREATED="1520539452855" ID="ID_1016058216" MODIFIED="1520539877730" TEXT="implementation">
+<node CREATED="1520539859632" ID="ID_1330352832" MODIFIED="1520539861332" TEXT="hardware"/>
+<node CREATED="1520539877721" ID="ID_712529007" MODIFIED="1520539877721" TEXT="">
+<node CREATED="1520539456559" ID="ID_220624828" MODIFIED="1520539466310" TEXT="install"/>
+<node CREATED="1520539767677" ID="ID_960032511" MODIFIED="1520539770282" TEXT="configuration"/>
+<node CREATED="1520539466615" ID="ID_609990482" MODIFIED="1520539473076" TEXT="users steup"/>
+<node CREATED="1520539473571" ID="ID_49938968" MODIFIED="1520539480106" TEXT="training"/>
+<node CREATED="1520539480578" ID="ID_1501866194" MODIFIED="1520539484407" TEXT="GoLive"/>
+</node>
+<node CREATED="1520540097138" ID="ID_1897849879" MODIFIED="1520540151124" TEXT="25 days x 500 euro/day = 12500 euro = 15300 usd"/>
+</node>
+</node>
+<node CREATED="1520539540684" ID="ID_649597282" MODIFIED="1520539541506" TEXT="time">
+<node CREATED="1520540338951" ID="ID_1918988726" MODIFIED="1520540460005" TEXT="40 working days"/>
+</node>
+<node CREATED="1520539570361" ID="ID_1258967155" MODIFIED="1520539573252" TEXT="features">
+<node CREATED="1520539573829" ID="ID_1495764709" MODIFIED="1520539576176" TEXT="product features">
+<node CREATED="1520540604578" ID="ID_895178038" MODIFIED="1520540609554" TEXT="see brochure"/>
+</node>
+<node CREATED="1520539612258" ID="ID_1626334547" MODIFIED="1520540602464" TEXT="included warranty">
+<node CREATED="1520539617104" ID="ID_1314697189" MODIFIED="1520539718543" TEXT="12 months x 2 days"/>
+</node>
+<node CREATED="1520539684290" ID="ID_206133266" MODIFIED="1520540595482" TEXT="extra support if needed">
+<node CREATED="1520539697646" ID="ID_851466031" MODIFIED="1520540589922" TEXT="1000 euro/month - 16 h/month reserved resources for support, small adaptations, configuration."/>
+</node>
+<node CREATED="1520539816737" ID="ID_1329072623" MODIFIED="1520539821571" TEXT="storage space">
+<node CREATED="1520539822127" ID="ID_1003870125" MODIFIED="1520539827263" TEXT="configurable"/>
+</node>
+<node CREATED="1520540466862" ID="ID_844286979" MODIFIED="1520540533146" TEXT="No special maintenance is needed except the usual OS updates, backup policies, admin tasks."/>
+</node>
+</node>
+<node CREATED="1520539288668" ID="ID_83818135" MODIFIED="1520540682971" TEXT="op2 - SAAS / Cloud">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<node CREATED="1520539298983" ID="ID_504043391" MODIFIED="1520540190917" TEXT="price">
+<node CREATED="1520540190912" ID="ID_218032643" MODIFIED="1520540194323" TEXT="yearly license">
+<node CREATED="1520539204172" ID="ID_1998395672" MODIFIED="1520539961807" TEXT="115 euro/user/year = 141 usd/user/year">
+<node CREATED="1520539316520" ID="ID_1526665753" MODIFIED="1520539340686" TEXT="600 users = 69000 euro = 84900 usd"/>
+<node CREATED="1520539394575" ID="ID_885239947" MODIFIED="1520539414339" TEXT="price for 100-1000 users"/>
+</node>
+</node>
+<node CREATED="1520540207040" ID="ID_51464321" MODIFIED="1520540209808" TEXT="implementation">
+<node CREATED="1520540210404" ID="ID_1950189765" MODIFIED="1520540213562" TEXT="-"/>
+</node>
+</node>
+<node CREATED="1520539542414" ID="ID_465701528" MODIFIED="1520539543230" TEXT="time">
+<node CREATED="1520540338951" ID="ID_1380938876" MODIFIED="1520540463280" TEXT="40 working days"/>
+</node>
+<node CREATED="1520539577473" ID="ID_1927050896" MODIFIED="1520539578490" TEXT="features">
+<node CREATED="1520539573829" ID="ID_783174757" MODIFIED="1520539576176" TEXT="product features">
+<node CREATED="1520540613732" ID="ID_261802497" MODIFIED="1520540616165" TEXT="see brochure"/>
+</node>
+</node>
+</node>
+<node CREATED="1520449170197" ID="ID_825311642" MODIFIED="1520449171453" TEXT="questions">
+<node CREATED="1520449173535" ID="ID_1992333656" MODIFIED="1520540668481" TEXT="Multitenancy is needed?"/>
+<node CREATED="1520540968280" ID="ID_1565525834" MODIFIED="1520540989047" TEXT="Clarify main usage scenarios."/>
+</node>
+</node>
+<node CREATED="1520445890084" ID="ID_1264858217" MODIFIED="1520540723149" TEXT="dashboard add-on for docLess">
+<font BOLD="true" NAME="SansSerif" SIZE="16"/>
+<node CREATED="1520449703370" ID="ID_1864604393" MODIFIED="1520449726906" TEXT="There are several options here, given that we don&apos;t know all the parameters of a good solution for you. We should discuss further."/>
+<node CREATED="1520446404119" ID="ID_1686438955" MODIFIED="1520540685582" TEXT="op1 - fixed dashboard">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<node CREATED="1520445910804" ID="ID_1937479252" MODIFIED="1520446579150" TEXT="type">
+<node CREATED="1520445912103" ID="ID_1119258874" MODIFIED="1520446649452" TEXT="Time and Materials"/>
+</node>
+<node CREATED="1520445903416" ID="ID_1374141208" MODIFIED="1520446654112" TEXT="time">
+<node CREATED="1520446655265" ID="ID_336903034" MODIFIED="1520449272384" TEXT="1-2 months"/>
+</node>
+<node CREATED="1520445901769" ID="ID_944278631" MODIFIED="1520445903134" TEXT="price">
+<node CREATED="1520446845401" ID="ID_735932967" MODIFIED="1520446851662" TEXT="8000-16000 euro"/>
+</node>
+<node CREATED="1520448900957" ID="ID_1417298961" MODIFIED="1520449016139" TEXT="method">
+<node CREATED="1520448849351" ID="ID_1728137569" MODIFIED="1520449003599" TEXT="Dev team, Agile, focused on maximum ROI, MVP"/>
+<node CREATED="1520448929246" ID="ID_1940268357" MODIFIED="1520448941827" TEXT="1 FTE = 8000euro"/>
+</node>
+<node CREATED="1520445904430" ID="ID_1760628628" MODIFIED="1520445905624" TEXT="features">
+<node CREATED="1520446410488" ID="ID_473827789" MODIFIED="1520446590939" TEXT="fixed dashboard"/>
+<node CREATED="1520446456827" ID="ID_1595009410" MODIFIED="1520446737813" TEXT="4 widgets in fixed position"/>
+<node CREATED="1520446739002" ID="ID_1307963443" MODIFIED="1520446744085" TEXT="data sources"/>
+</node>
+</node>
+<node CREATED="1520446406858" ID="ID_136082322" MODIFIED="1520540686420" TEXT="op2 - configurable dashboard">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<node CREATED="1520445910804" ID="ID_1815136299" MODIFIED="1520446582548" TEXT="type">
+<node CREATED="1520445912103" ID="ID_797049245" MODIFIED="1520446649452" TEXT="Time and Materials"/>
+</node>
+<node CREATED="1520445903416" ID="ID_855307228" MODIFIED="1520445904175" TEXT="time">
+<node CREATED="1520446896438" ID="ID_702664925" MODIFIED="1520446955780" TEXT="2-4 months"/>
+</node>
+<node CREATED="1520445901769" ID="ID_941466794" MODIFIED="1520446895650" TEXT="price">
+<node CREATED="1520446966538" ID="ID_347694949" MODIFIED="1520446971619" TEXT="16000-32000 euro"/>
+</node>
+<node CREATED="1520448900957" ID="ID_1484095497" MODIFIED="1520448919540" TEXT="method">
+<node CREATED="1520448849351" ID="ID_1901755462" MODIFIED="1520448890581" TEXT="1-3 dev team, Agile, focused on maximum ROI, MVP"/>
+<node CREATED="1520448929246" ID="ID_697857105" MODIFIED="1520448941827" TEXT="1 FTE = 8000euro"/>
+</node>
+<node CREATED="1520445904430" ID="ID_1664928685" MODIFIED="1520448900961" TEXT="features">
+<node CREATED="1520446481323" ID="ID_478486075" MODIFIED="1520446593930" TEXT="20 widgets to select from"/>
+<node CREATED="1520446419608" ID="ID_1937095922" MODIFIED="1520446593929" TEXT="dashboard editing in a configuration file"/>
+<node CREATED="1520446875977" ID="ID_1521506293" MODIFIED="1520446879625" TEXT="can continue op1"/>
+<node CREATED="1520448355543" ID="ID_1014562557" MODIFIED="1520448489807" TEXT="BI solution">
+<node CREATED="1520448356562" ID="ID_779437248" MODIFIED="1520448358085" TEXT="custom"/>
+<node CREATED="1520448358341" ID="ID_1572928290" MODIFIED="1520448391747" TEXT="JasperReports or equivalent"/>
+<node CREATED="1520448489801" ID="ID_1812504958" MODIFIED="1520448770920" TEXT="see JasperReports">
+<node CREATED="1520448487938" ID="ID_1517501255" LINK="https://mobiledemo.jaspersoft.com/jasperserver-pro/dashboard/viewer.html?_ddHyperlink=1&amp;noReturn=true#/public/Samples/Dashboards/3.1_Sales_Metrics" MODIFIED="1520448487938" TEXT="https://mobiledemo.jaspersoft.com/jasperserver-pro/dashboard/viewer.html?_ddHyperlink=1&amp;noReturn=true#/public/Samples/Dashboards/3.1_Sales_Metrics"/>
+</node>
+</node>
+</node>
+</node>
+<node CREATED="1520446408454" ID="ID_1707487674" MODIFIED="1520540687248" TEXT="op3 - editable dashboard">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<node CREATED="1520445910804" ID="ID_1597350080" MODIFIED="1520446579150" TEXT="type">
+<node CREATED="1520445912103" ID="ID_275194496" MODIFIED="1520446649452" TEXT="Time and Materials"/>
+</node>
+<node CREATED="1520445903416" ID="ID_449887381" MODIFIED="1520447066143" TEXT="time">
+<node CREATED="1520447044874" ID="ID_1136400686" MODIFIED="1520447064720" TEXT="4-12 months"/>
+</node>
+<node CREATED="1520445901769" ID="ID_1023158637" MODIFIED="1520445903134" TEXT="price">
+<node CREATED="1520447068556" ID="ID_1218649276" MODIFIED="1520448745777" TEXT="8000 euro/month FTE"/>
+</node>
+<node CREATED="1520448900957" ID="ID_581436826" MODIFIED="1520449054619" TEXT="method">
+<node CREATED="1520448849351" ID="ID_1985666300" MODIFIED="1520448890581" TEXT="1-3 dev team, Agile, focused on maximum ROI, MVP"/>
+<node CREATED="1520448929246" ID="ID_1952334192" MODIFIED="1520448941827" TEXT="1 FTE = 8000euro"/>
+</node>
+<node CREATED="1520445904430" ID="ID_1229743773" MODIFIED="1520445905624" TEXT="features">
+<node CREATED="1520446510987" ID="ID_1058945145" MODIFIED="1520446596555" TEXT="20 widgets to edit(add/drop) by project manager"/>
+<node CREATED="1520446436487" ID="ID_189336598" MODIFIED="1520446596554" TEXT="full dashboarding editor"/>
+<node CREATED="1520446881353" ID="ID_955369479" MODIFIED="1520446883473" TEXT="can continue op2"/>
+</node>
+</node>
+<node CREATED="1520447255289" ID="ID_1302518426" MODIFIED="1520540689278" TEXT="op4 - integrate powerBI reports">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<node CREATED="1520447840503" ID="ID_387665300" MODIFIED="1520449747667" TEXT="It looks like it can&apos;t be embedded.">
+<node CREATED="1520447839587" ID="ID_1095793871" LINK="https://community.powerbi.com/t5/Developer/How-to-Embed-Power-BI-dashboard/td-p/53146" MODIFIED="1520447839587" TEXT="https://community.powerbi.com/t5/Developer/How-to-Embed-Power-BI-dashboard/td-p/53146"/>
+<node CREATED="1520447917291" ID="ID_1609695968" LINK="https://powerbi.microsoft.com/en-us/blog/integrate-power-bi-reports-in-sharepoint-online/" MODIFIED="1520447917291" TEXT="https://powerbi.microsoft.com/en-us/blog/integrate-power-bi-reports-in-sharepoint-online/"/>
+</node>
+</node>
+</node>
+</node>
+<node CREATED="1520439101001" ID="ID_1203961333" MODIFIED="1520448325816" TEXT="internal">
+<node CREATED="1520439103681" ID="ID_414276877" MODIFIED="1520439107281" TEXT="activity monitor">
+<node CREATED="1520439107277" ID="ID_130707542" MODIFIED="1520439108983" TEXT="skype">
+<node CREATED="1520439102577" ID="ID_1115813338" LINK="https://github.com/Skype4Py/Skype4Py" MODIFIED="1520439102577" TEXT="https://github.com/Skype4Py/Skype4Py"/>
+</node>
+</node>
+<node CREATED="1520446253220" ID="ID_985771080" MODIFIED="1520446315905" TEXT="commercial offer/proposal">
+<node CREATED="1520446315899" ID="ID_230479498" MODIFIED="1520446317751" TEXT="samples">
+<node CREATED="1520446304339" ID="ID_717054371" LINK="https://www.google.ro/search?biw=1252&amp;bih=704&amp;tbm=isch&amp;sa=1&amp;ei=6yqgWs6XFcXwgAbQwpmQAw&amp;q=Commercial+proposal&amp;oq=Commercial+proposal" MODIFIED="1520446304339" TEXT="https://www.google.ro/search?biw=1252&amp;bih=704&amp;tbm=isch&amp;sa=1&amp;ei=6yqgWs6XFcXwgAbQwpmQAw&amp;q=Commercial+proposal&amp;oq=Commercial+proposal"/>
+<node CREATED="1520446311103" ID="ID_381446594" LINK="http://businessproposaltemplated.org/commercial-proposal.php" MODIFIED="1520446311103" TEXT="businessproposaltemplated.org &gt; Commercial-proposal"/>
+</node>
+</node>
+<node CREATED="1520448325812" ID="ID_808674729" MODIFIED="1520448327747" TEXT="BI solutions">
+<node CREATED="1520448324719" ID="ID_597246976" LINK="https://www.predictiveanalyticstoday.com/open-source-free-business-intelligence-solutions/" MODIFIED="1520448324719" TEXT="https://www.predictiveanalyticstoday.com/open-source-free-business-intelligence-solutions/"/>
+<node CREATED="1520456043784" LINK="https://jsfiddle.net/gh/get/mootools/1.5.2/TIBCOSoftware/JS-visualize/tree/master/dashboard-embed/dash-embed/" MODIFIED="1520456043784" TEXT="https://jsfiddle.net/gh/get/mootools/1.5.2/TIBCOSoftware/JS-visualize/tree/master/dashboard-embed/dash-embed/"/>
+</node>
+<node CREATED="1520456533023" ID="ID_854076984" MODIFIED="1520456535990" TEXT="dashboard">
+<node CREATED="1520456536257" LINK="https://www.google.ro/search?q=klipfolio&amp;source=lnms&amp;tbm=isch&amp;sa=X&amp;ved=0ahUKEwiKn47dgdjZAhVDIsAKHdzRCK4Q_AUICigB&amp;biw=1920&amp;bih=1020#imgrc=Lem9yZ5EXn1RGM:" MODIFIED="1520456536257" TEXT="https://www.google.ro/search?q=klipfolio&amp;source=lnms&amp;tbm=isch&amp;sa=X&amp;ved=0ahUKEwiKn47dgdjZAhVDIsAKHdzRCK4Q_AUICigB&amp;biw=1920&amp;bih=1020#imgrc=Lem9yZ5EXn1RGM:"/>
+</node>
+<node CREATED="1520456544676" ID="ID_298680859" MODIFIED="1520456546223" TEXT="docless">
+<node CREATED="1520456546523" LINK="https://www.capterra.com/document-management-software/" MODIFIED="1520456546523" TEXT="https://www.capterra.com/document-management-software/"/>
+</node>
+<node CREATED="1520448615792" ID="ID_1238520593" MODIFIED="1520448616754" TEXT="prices">
+<node CREATED="1520448617086" LINK="https://www.wikihow.com/Calculate-FTE" MODIFIED="1520448617086" TEXT="https://www.wikihow.com/Calculate-FTE"/>
+</node>
+</node>
+</node>
+<node CREATED="1520445917827" ID="ID_274018629" MODIFIED="1520445929010" POSITION="right" TEXT="prj-add-ons">
+<node CREATED="1520445929579" ID="ID_1031368683" MODIFIED="1520447032778" TEXT="Time &amp; Materials">
+<node CREATED="1520447028975" ID="ID_1365027006" MODIFIED="1520447031721" TEXT="features">
+<node CREATED="1520445962580" ID="ID_473392219" MODIFIED="1520445980926" TEXT="features in a direction that we cannot reuse for other clients"/>
+</node>
+<node CREATED="1520446010193" ID="ID_1671437400" MODIFIED="1520446011166" TEXT="time">
+<node CREATED="1520445982617" ID="ID_760181603" MODIFIED="1520446014718" TEXT="months/years"/>
+</node>
+<node CREATED="1520446031507" ID="ID_511029575" MODIFIED="1520446032236" TEXT="price">
+<node CREATED="1520446075294" ID="ID_409269740" MODIFIED="1520446090312" TEXT="client pay for the entire team needed to implement it"/>
+</node>
+<node CREATED="1520447032773" ID="ID_621844790" MODIFIED="1520447034376" TEXT="description">
+<node CREATED="1520447024789" ID="ID_1196554361" LINK="https://en.wikipedia.org/wiki/Time_and_materials" MODIFIED="1520447024789" TEXT="https://en.wikipedia.org/wiki/Time_and_materials"/>
+</node>
+</node>
+<node CREATED="1520445936148" ID="ID_1480292206" MODIFIED="1520445948916" TEXT="Fixed Price for Prioritized Features">
+<node CREATED="1520445994237" ID="ID_803839186" MODIFIED="1520446002339" TEXT="time">
+<node CREATED="1520445982617" ID="ID_320661572" MODIFIED="1520446014718" TEXT="months/years"/>
+</node>
+<node CREATED="1520446033440" ID="ID_244860016" MODIFIED="1520446034166" TEXT="price">
+<node CREATED="1520446041058" ID="ID_527604194" MODIFIED="1520446072908" TEXT="fixed price that usually doesn&apos;t cover the cost that must be amortised by finding other clients"/>
+</node>
+</node>
+<node CREATED="1520445949156" ID="ID_1510799344" MODIFIED="1520445957885" TEXT="Free if in Roadmap">
+<node CREATED="1520446018930" ID="ID_1016805096" MODIFIED="1520446021376" TEXT="time">
+<node CREATED="1520445982617" ID="ID_1473356471" MODIFIED="1520446014718" TEXT="months/years"/>
+</node>
+<node CREATED="1520446034971" ID="ID_1510901574" MODIFIED="1520446036354" TEXT="price">
+<node CREATED="1520446036809" ID="ID_1103899800" MODIFIED="1520446037702" TEXT="free"/>
+</node>
+</node>
+</node>
+<node CREATED="1520597300337" ID="ID_501547487" MODIFIED="1520597314673" POSITION="right" TEXT="dcs-suits">
+<node CREATED="1520597315289" ID="ID_82924678" MODIFIED="1520597819264" TEXT="marketing">
+<node CREATED="1520597819241" ID="ID_261594610" MODIFIED="1520597822708" TEXT="events classification">
+<node CREATED="1520597321082" ID="ID_105598750" MODIFIED="1520597322611" TEXT="event types">
+<node CREATED="1520597363551" ID="ID_404957860" LINK="https://www.linkedin.com/pulse/15-types-events-your-business-can-host-key-events/" MODIFIED="1520597363551" TEXT="https://www.linkedin.com/pulse/15-types-events-your-business-can-host-key-events/"/>
+<node CREATED="1520597398731" ID="ID_1880471575" MODIFIED="1520597398731" TEXT="1.&#xa0;&#xa0;&#xa0;&#xa0; Business dinners &#x2013;&#xa0;One of the most traditional business events, business dinners can be held for a range of reasons, from celebrating milestones to simply getting together with employees and clients."/>
+<node CREATED="1520597398732" MODIFIED="1520597398732" TEXT="2.&#xa0;&#xa0;&#xa0;&#xa0; Networking events &#x2013;&#xa0;These events are ideal for making new contacts, leading to new clients, partners, and vendors."/>
+<node CREATED="1520597398733" MODIFIED="1520597398733" TEXT="3.&#xa0;&#xa0;&#xa0;&#xa0; Product launches &#x2013;&#xa0;Create a buzz around the release of your new product by holding a launch party. It&#x2019;s a good way to get customers excited and to generate media coverage."/>
+<node CREATED="1520597398734" MODIFIED="1520597398734" TEXT="4.&#xa0;&#xa0;&#xa0;&#xa0; Award ceremonies &#x2013;&#xa0;Boost employee morale by hosting an event to honor them for all of the things they&#x2019;ve done for your company."/>
+<node CREATED="1520597398735" MODIFIED="1520597398735" TEXT="5.&#xa0;&#xa0;&#xa0;&#xa0; Holiday parties &#x2013;&#xa0;The holidays present the perfect opportunity to throw a great party where you can invite clients, prospects, media members, and employees."/>
+<node CREATED="1520597398736" MODIFIED="1520597398736" TEXT="6.&#xa0;&#xa0;&#xa0;&#xa0; Customer appreciation parties &#x2013;&#xa0;Customer retention should always be a focus for your business. Show your customers how much your appreciate them by hosting an event just for them."/>
+<node CREATED="1520597398737" MODIFIED="1520597398737" TEXT="9.&#xa0;&#xa0;&#xa0;&#xa0; Board meetings &#x2013;&#xa0;These prestigious meetings let you cover your company&#x2019;s recent progress and discuss future goals and strategies."/>
+<node CREATED="1520597398738" MODIFIED="1520597398738" TEXT="10.&#xa0;&#xa0;&#xa0;&#xa0; Happy hours &#x2013;&#xa0;Blow off a little steam from the work week and build relationships at a company-hosted happy hour event."/>
+<node CREATED="1520597398740" MODIFIED="1520597398740" TEXT="11.&#xa0; Seminars &#x2013;&#xa0;Seminars are educational events for managers, employees, or even the general public. They can have a single speaker or multiple speakers throughout the seminar."/>
+<node CREATED="1520597398741" MODIFIED="1520597398741" TEXT="12.&#xa0; Shareholder meetings &#x2013;&#xa0;These events are typically held quarterly or annually to keep shareholders updated about company issues and to take care of other executive-level business."/>
+<node CREATED="1520597398742" MODIFIED="1520597398742" TEXT="13.&#xa0; Charity functions &#x2013;&#xa0;Charity events highlight your brand in a positive way, attract media attention, and allow you to give something back to an important cause."/>
+<node CREATED="1520597398743" MODIFIED="1520597398743" TEXT="14.&#xa0; Press conferences &#x2013;&#xa0;Use press conferences to get the media talking about new products, important business issues, or to launch new marketing campaigns."/>
+<node CREATED="1520597398745" ID="ID_302940371" MODIFIED="1520597398745" TEXT="15.&#xa0; Trade shows &#x2013;&#xa0;Hosting a trade show is a great way to position your brand as an industry leader and to generate new leads."/>
+<node CREATED="1520597398746" ID="ID_1553662681" MODIFIED="1520597398746" TEXT="16.&#xa0; VIP events &#x2013;&#xa0;Make your best customers feel special by hosting exclusive VIP events just for them. These events can be things like sneak previews of new products or special private sales."/>
+</node>
+<node CREATED="1520597445266" FOLDED="true" ID="ID_368317573" MODIFIED="1520597805736" TEXT="types of corporate events">
+<node CREATED="1520597444028" ID="ID_103003849" LINK="http://eventmanagement.com/events/types-of-corporate-events/" MODIFIED="1520597444028" TEXT="eventmanagement.com &gt; Events &gt; Types-of-corporate-events"/>
+<node CREATED="1520597805701" FOLDED="true" ID="ID_604972143" MODIFIED="1520597805701" TEXT="">
+<node CREATED="1520597466984" ID="ID_32720855" MODIFIED="1520597466984" TEXT="List of Corporate Events"/>
+<node CREATED="1520597466985" ID="ID_1910978432" MODIFIED="1520597466985" TEXT="Conference Conferences are popular and important business events. Everything about the event management of academic, medical and business conferences"/>
+<node CREATED="1520597466986" ID="ID_1288236011" MODIFIED="1520597466986" TEXT="Seminar Seminars educational events for the training of managers and employees. Most seminars are not comparable with boring lectures. Interactivity is core!"/>
+<node CREATED="1520597466987" ID="ID_405441310" MODIFIED="1520597466987" TEXT="Meeting"/>
+<node CREATED="1520597466988" ID="ID_662780614" MODIFIED="1520597466988" TEXT="Meetings are common business events in large companies, perfect to discuss operational and financial strategies"/>
+<node CREATED="1520597466989" ID="ID_535350768" MODIFIED="1520597466989" TEXT="Team Building Team Building Events a key to develop and motivate teams in companies and divisions. Everything about the planning of professional team building events"/>
+<node CREATED="1520597466990" ID="ID_1399501132" MODIFIED="1520597466990" TEXT="Trade Show Trade Shows exhibitions where companies can present and demonstrate their latest products. A professional presentation is crucial"/>
+<node CREATED="1520597466991" ID="ID_1617311733" MODIFIED="1520597466991" TEXT="Business Dinner Business Dinners a long-standing corporate tradition to conclude fiscal years, celebrate new milestones or to get in contact with key customers"/>
+<node CREATED="1520597466992" ID="ID_1644310339" MODIFIED="1520597466992" TEXT="Golf Event Golf Events golf tournaments or retreats. Those events aim to acquire new customers, to increase customer loyalty or to motivate employees"/>
+<node CREATED="1520597466993" ID="ID_1637468944" MODIFIED="1520597466993" TEXT="Press Conference Press Conferences perfect business events to promote new products, launch marketing campains or to inform the shareholders and public about financial issues"/>
+<node CREATED="1520597466995" ID="ID_329742857" MODIFIED="1520597466995" TEXT="Networking Event Networking Events are personal marketing galas. Such events are great opportunities for contact establishment and personal marketing"/>
+<node CREATED="1520597466996" ID="ID_870902042" MODIFIED="1520597466996" TEXT="Incentive Travel Incentive Travel are perfect to reward and to motivate employees or to increase customer loyalty and retention. Everything about incentive travel:"/>
+<node CREATED="1520597466997" ID="ID_206243995" MODIFIED="1520597466997" TEXT="Opening Ceremony Opening Ceremonies are held to start conventions, annual meetings and other events that last for two or more days. Find everything about opening events"/>
+<node CREATED="1520597466998" ID="ID_473991508" MODIFIED="1520597466998" TEXT="Product Launch Product Launches are critical for the successful market introduction of some products. A perfect product presentation might also increase the media coverage"/>
+<node CREATED="1520597466999" ID="ID_1163968401" MODIFIED="1520597466999" TEXT="Theme Party Theme Parties events that devote to a special topic. Popular events are casino nights or Halloween parties. Ideas and planning tips"/>
+<node CREATED="1520597467000" ID="ID_647176148" MODIFIED="1520597467000" TEXT="VIP Event VIP Events are used to increase customer loyalty. Professional planners organizing VIP events that ultimately increase your revenues"/>
+<node CREATED="1520597467001" ID="ID_132175267" MODIFIED="1520597467001" TEXT="Trade Fair Trade Fairs are a great opportunity to present your latest products to customers and business partners."/>
+<node CREATED="1520597467003" ID="ID_316122067" MODIFIED="1520597467003" TEXT="Annual Shareholder Meeting Shareholder Meetings are yearly and obligatory events to inform a corporation&apos;s shareholders about company issues and to elect the Board of Directors"/>
+<node CREATED="1520597467005" ID="ID_1412185708" MODIFIED="1520597467005" TEXT="Award Ceremony Award Ceremonies are great events to honor and motivate key staff or to acquire and retain customers. Event planners are able to organize events to remember"/>
+<node CREATED="1520597467006" ID="ID_1741875857" MODIFIED="1520597467006" TEXT="Incentive Event Incentive Events motivate employees or close the ties to customers. Event managers are planning events that help to enhance customer loyalty"/>
+<node CREATED="1520597467008" ID="ID_1474443988" MODIFIED="1520597467008" TEXT="Board Meeting Board Meetings focus on strategic goals and visions. The event venue and the planning process should reflect the prestigious nature of these meetings"/>
+<node CREATED="1520597467009" ID="ID_802804026" MODIFIED="1520597467009" TEXT="Executie Retreat Executive Retreats escapes from stressful work schedules and the day-to-day business. Learn how they should stimulate free thinking and creativity"/>
+</node>
+<node CREATED="1520597509666" ID="ID_1054204043" MODIFIED="1520597509666" TEXT="Events">
+<node CREATED="1520597509666" ID="ID_1028107650" MODIFIED="1520597509666" TEXT="Corporate Events">
+<node CREATED="1520597509667" ID="ID_289247235" MODIFIED="1520597509667" TEXT="Conferences">
+<node CREATED="1520597570450" ID="ID_1491798645" MODIFIED="1520597570450" TEXT="Academic conferences">
+<node CREATED="1520597570451" ID="ID_1661080089" MODIFIED="1520597570451" TEXT="These can be held for two main reasons. University scientists hold them to announce research results. There is also a &#x201c;call for papers&#x201d; where newly published information is presented to a group. Many conference planning companies specialize in these types of gatherings for colleges and universities. These companies help in publishing the research or paper, as well. Many of these conferences are held on the campus of a large university."/>
+</node>
+<node CREATED="1520597570453" ID="ID_369152811" MODIFIED="1520597570453" TEXT="Medical conferences">
+<node CREATED="1520597570454" ID="ID_1294141351" MODIFIED="1520597570454" TEXT="Thanks to science, new advances in medicine are announced all the time. Medical conferences are a way for doctors and other medical professionals to keep up with these advances and to earn the needed continuing education credits to keep their license. Often professional organizations such as the American Medical Association host annual conferences to give doctors the opportunity to earn these credits."/>
+</node>
+<node CREATED="1520597570455" ID="ID_364753455" MODIFIED="1520597570455" TEXT="Business conferences">
+<node CREATED="1520597570456" ID="ID_1712041690" MODIFIED="1520597570456" TEXT="These can be several types. (1) Annual meetings. Many companies hold this type of meeting for shareholders to announce the company&#x2019;s accomplishments of the past year and to highlight the future. (2) If a company has many divisions around the world, often the management teams will get together to talk about the business&#x2019; direction and to share best practices. This may be the only time they are in the same town. Often these conferences are held in the same town as the company&#x2019;s headquarters."/>
+</node>
+<node CREATED="1520597570458" ID="ID_1808578251" MODIFIED="1520597570458" TEXT="Training conferences">
+<node CREATED="1520597570458" ID="ID_87798232" MODIFIED="1520597570458" TEXT="Large organizations, such as United Way, will hold these types of conferences several times a year. This gives everyone the opportunity to learn new information and share best practices with their colleagues. Often training conferences will be presented by a marketing company and will be open to anyone from any company. These types of conferences require a classroom type of setting and easy access to restaurants if lunch and dinner is not included in the session."/>
+</node>
+<node CREATED="1520597570460" ID="ID_435041807" MODIFIED="1520597570460" TEXT="Internet conferences">
+<node CREATED="1520597570460" ID="ID_1894676253" MODIFIED="1520597570460" TEXT="These virtual gatherings have grown in popularity as travel costs have increased while company budgets have not. Even though they may seem as simple as just getting online, these conferences require planning---particularly if the participants are in different time zones."/>
+</node>
+</node>
+<node CREATED="1520597509668" ID="ID_911531765" MODIFIED="1520597509668" TEXT="Trade Shows"/>
+<node CREATED="1520597509669" ID="ID_713977116" MODIFIED="1520597509669" TEXT="Seminars"/>
+<node CREATED="1520597509669" ID="ID_1598061122" MODIFIED="1520597509669" TEXT="Meetings"/>
+<node CREATED="1520597509670" ID="ID_1256326604" MODIFIED="1520597509670" TEXT="Team Building"/>
+<node CREATED="1520597509670" ID="ID_14161996" MODIFIED="1520597509670" TEXT="Golf"/>
+<node CREATED="1520597509671" ID="ID_72105363" MODIFIED="1520597509671" TEXT="Press Conferences"/>
+<node CREATED="1520597509672" ID="ID_278785533" MODIFIED="1520597509672" TEXT="Networking Events"/>
+<node CREATED="1520597509672" ID="ID_405223374" MODIFIED="1520597509672" TEXT="Incentive Travel"/>
+<node CREATED="1520597509673" ID="ID_1051512102" MODIFIED="1520597509673" TEXT="Opening Ceremonies"/>
+<node CREATED="1520597509673" ID="ID_512994611" MODIFIED="1520597509673" TEXT="Product Launches"/>
+<node CREATED="1520597509674" ID="ID_659924765" MODIFIED="1520597509674" TEXT="VIP Events"/>
+<node CREATED="1520597509675" ID="ID_999874239" MODIFIED="1520597509675" TEXT="Theme Parties"/>
+<node CREATED="1520597509675" ID="ID_771907184" MODIFIED="1520597509675" TEXT="Trade Fairs">
+<node CREATED="1520597633739" MODIFIED="1520597633739" TEXT="Definition, &#x201c;fairs:&#x201d; a place for a buyer and seller to meet."/>
+</node>
+<node CREATED="1520597509676" ID="ID_1649568756" MODIFIED="1520597509676" TEXT="Shareholders Meetings"/>
+<node CREATED="1520597509676" ID="ID_1766621607" MODIFIED="1520597509676" TEXT="Award Ceremonies"/>
+<node CREATED="1520597509677" ID="ID_664903401" MODIFIED="1520597509677" TEXT="Incentive Events"/>
+<node CREATED="1520597509677" ID="ID_1789520239" MODIFIED="1520597509677" TEXT="Board Meetings"/>
+<node CREATED="1520597509678" ID="ID_383020639" MODIFIED="1520597509678" TEXT="Executive Retreats"/>
+<node CREATED="1520597509679" ID="ID_455401822" MODIFIED="1520597509679" TEXT="Business Dinners"/>
+</node>
+<node CREATED="1520597509679" ID="ID_1293937805" MODIFIED="1520597509679" TEXT="Private Events">
+<node CREATED="1520597530512" ID="ID_644531420" MODIFIED="1520597530512" TEXT="Weddings"/>
+<node CREATED="1520597530513" ID="ID_1777064374" MODIFIED="1520597530513" TEXT="Birthday Events"/>
+<node CREATED="1520597530514" ID="ID_1823313142" MODIFIED="1520597530514" TEXT="Wedding Anniversaries"/>
+<node CREATED="1520597530514" ID="ID_1209977058" MODIFIED="1520597530514" TEXT="Family Events"/>
+<node CREATED="1520597530515" ID="ID_1916837880" MODIFIED="1520597530515" TEXT="Personal Events"/>
+</node>
+</node>
+</node>
+<node CREATED="1520597808945" ID="ID_150482286" LINK="https://www.bbblanc.com/your-guide-to-the-different-types-of-corporate-events/" MODIFIED="1520597810947" TEXT="https://www.bbblanc.com/your-guide-to-the-different-types-of-corporate-events/"/>
+</node>
 </node>
 </node>
 </node>
