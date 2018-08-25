@@ -95,7 +95,7 @@ trait SNode extends Dynamic with SNodeNoDynamic with Iterable[SNode] { self =>
   /**Adding `with Iterable[SNode]` breaks toString on case classes. So we redefine it.*/
   override def toString(): String = self.getClass match {
     case t if classOf[Product].isAssignableFrom(t) => ScalaRunTime._toString(self.asInstanceOf[Product])
-    case _                                         => ???
+    case _ => ???
   }
 
 }
@@ -107,13 +107,13 @@ trait SNodeNoDynamic extends JNode { self =>
   def selectDynamic(key: String): self.type = child(key).asInstanceOf[self.type]
   //def nonEmpty: Boolean = isSuccess
   def isFailure: Boolean = !isSuccess
-  def isSuccess: Boolean = true
+  def isSuccess: Boolean
   def id: String /*NodeId*/ = "@" + hashCode
 
   override def child(key: String): self.type
-  override def addChildToJNode(key:String,value:Any):JNode = addChild(key,value)
+  override def addChildToJNode(key: String, value: Any): JNode = addChild(key, value)
   //TODO key is not added
-  def addChild(key:String,value:Any):SNode = self.asInstanceOf[SNode]
+  def addChild(key: String, value: Any): SNode = self.asInstanceOf[SNode]
 
   //see more https://medium.com/@sinisalouc/overcoming-type-erasure-in-scala-8f2422070d20
   def as[T](implicit tag: WeakTypeTag[T]): T = ???
@@ -144,15 +144,15 @@ trait SNodeNoDynamic extends JNode { self =>
   /**Switch node to a statically checked type.*/
   def asStatic: SNodeNoDynamic = this
   override def asOptionalString(): java.util.Optional[String] = java.util.Optional.ofNullable(asOptionString.getOrElse(null))
-//  @deprecated def get(key: String): self.type = child(key)
-//  def or(key: String, value: =>self.type): self.type = {
-//    val res = child(key)
-//    if (res.isFailure)
-//      value
-//    else
-//      res
-//  }
-  def getOr[T](key: String, value: =>T)(implicit tag: WeakTypeTag[T]): T = child(key).as[Option[T]].getOrElse(value)
+  //  @deprecated def get(key: String): self.type = child(key)
+  //  def or(key: String, value: =>self.type): self.type = {
+  //    val res = child(key)
+  //    if (res.isFailure)
+  //      value
+  //    else
+  //      res
+  //  }
+  def getOr[T](key: String, value: => T)(implicit tag: WeakTypeTag[T]): T = child(key).as[Option[T]].getOrElse(value)
 }
 case class ANodeError(ex: Throwable, val path: Vector[Either[Int, String]] = Vector()) extends SNode { self =>
   //type ChildNodeType = ANodeError
@@ -193,8 +193,10 @@ case class ANodeError(ex: Throwable, val path: Vector[Either[Int, String]] = Vec
 //}
 
 case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
-//  if (syaml.isInstanceOf[SyamlError])
-//    throw new RuntimeException(s"When reading [${syaml.asInstanceOf[SyamlError].source}]:" + syaml.asInstanceOf[SyamlError].error.getMessage, syaml.asInstanceOf[SyamlError].error)
+  def isSuccess: Boolean = syaml.isSuccess
+
+  //  if (syaml.isInstanceOf[SyamlError])
+  //    throw new RuntimeException(s"When reading [${syaml.asInstanceOf[SyamlError].source}]:" + syaml.asInstanceOf[SyamlError].error.getMessage, syaml.asInstanceOf[SyamlError].error)
   //require(!syaml.isInstanceOf[SyamlError], s"$syaml is an error")
   def child(key: String): self2.type = SyamlANode(syaml.selectDynamic(key)).asInstanceOf[self2.type]
   //def syaml: Syaml = $root.value.asInstanceOf[Syaml]
@@ -224,13 +226,13 @@ case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
       syaml.valueToOption.asInstanceOf[T]
     case t @ TypeRef(utype, usymbol, args) if t =:= ru.typeOf[Option[Boolean]] =>
       //println(List(utype, usymbol, args).mkString(","))
-      if(syaml.value.isInstanceOf[Boolean])
+      if (syaml.value.isInstanceOf[Boolean])
         syaml.asBoolean.toOption.asInstanceOf[T]
       else
         Option.empty[Boolean].asInstanceOf[T]
     case t @ TypeRef(utype, usymbol, args) if t =:= ru.typeOf[Option[Int]] =>
       //println(List(utype, usymbol, args).mkString(","))
-      if(syaml.value.isInstanceOf[Int])
+      if (syaml.value.isInstanceOf[Int])
         syaml.asInt.toOption.asInstanceOf[T]
       else
         Option.empty[Boolean].asInstanceOf[T]
@@ -243,13 +245,14 @@ case class SyamlANode(syaml: Syaml) extends SNode { self2 =>
   }
   override def asIterable: Iterable[self2.type] = syaml.children.map(x => SyamlANode(x)).asInstanceOf[Iterable[self2.type]]
 
-  override def addChildToJNode(key:String,value:Any):JNode = addChild(key,value)
-    
-  override def addChild(key:String,value:Any):SNode = 
-    SyamlANode(syaml.withChild(key,value))
+  override def addChildToJNode(key: String, value: Any): JNode = addChild(key, value)
+
+  override def addChild(key: String, value: Any): SNode =
+    SyamlANode(syaml.withChild(key, value))
 }
 
 case class RaptureXmlNode(xml: rapture.xml.Xml) extends SNode { self =>
+  def isSuccess: Boolean = true
   println(s"loaded $this")
   def child(key: String): self.type = RaptureXmlNode(xml.selectDynamic(key)).asInstanceOf[self.type]
   override def asType[T](t: ru.Type): T = {
@@ -330,6 +333,7 @@ case class JsonNodeValidator(schema: JsonSchema) extends JNodeValidator {
 }
 
 case class RaptureJsonANode(json: Json) extends SNode { self =>
+  def isSuccess: Boolean = true
   def child(key: String): self.type = RaptureJsonANode(json.selectDynamic(key)).asInstanceOf[self.type]
   //def json:Json = $root.value.asInstanceOf[Json]
   //override type T = RaptureJsonANode
@@ -435,6 +439,7 @@ object AllExtractors {
 /*-------------------------------------------------------------------------------------------------------*/
 @deprecated("too simple xpath selections")
 case class ScalaElemNode(value: Node) extends SNode { self =>
+  def isSuccess: Boolean = true
   //  override def id = Option(value.\@("id")).filter(_.nonEmpty).getOrElse(super.id)
   override def child(key: String /*NodeSelector*/ ): self.type = Try { one(value.\(key)) }.
     map(x => ScalaElemNode(x)).recover { case x: Throwable => ANodeError(new IllegalArgumentException(s"When searching for child [$key]: " + x.getMessage, x)) }.get.asInstanceOf[self.type]
@@ -444,7 +449,7 @@ case class ScalaElemNode(value: Node) extends SNode { self =>
   private def one(seq: NodeSeq): Node = seq match {
     case a: NodeSeq if a.length == 1 => a.head
     case a: NodeSeq if a.length == 0 => throw new IllegalArgumentException(s"No child node.")
-    case a: NodeSeq if a.length > 1  => throw new IllegalArgumentException(s"There are multiple child nodes.")
+    case a: NodeSeq if a.length > 1 => throw new IllegalArgumentException(s"There are multiple child nodes.")
   }
 }
 
@@ -452,6 +457,7 @@ case class ScalaElemNode(value: Node) extends SNode { self =>
 
 /*-------------------------------------------------------------------------------------------------------*/
 case class MindMapJavaXmlNode(node: JavaXmlNode) extends SNode { self =>
+  def isSuccess: Boolean = node.isSuccess
   override def child(key: String): self.type = MindMapJavaXmlNode(node.queryOne("//node[@TEXT='" + key + "']").asInstanceOf[JavaXmlNode]).asInstanceOf[self.type]
   def all: Stream[SNode] = ???
 }

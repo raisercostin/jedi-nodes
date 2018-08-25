@@ -6,7 +6,8 @@ import org.raisercostin.namek.nodes._
 import rapture.data.MutableCell
 import scala.Vector
 
-case class JavaXmlNode(value:org.w3c.dom.Node) extends SNode {self=>
+case class JavaXmlNode(value: org.w3c.dom.Node) extends SNode { self =>
+  def isSuccess: Boolean = true
   import JavaXmlNode._
   import javax.xml.xpath.XPathFactory
   import org.w3c.dom.NodeList
@@ -27,13 +28,13 @@ case class JavaXmlNode(value:org.w3c.dom.Node) extends SNode {self=>
     val stream: Stream[SNode] = Stream.from(0, nl.getLength).map(i => JavaXmlNode(nl.item(i)))
     stream.head
   }
-//  override def queryOneList(path: NodeSelector): ANodeList = {
-//    val xpath = xPathfactory.newXPath()
-//    val expr = xpath.compile(path)
-//    val nl: NodeList = expr.evaluate(value, XPathConstants.NODESET).asInstanceOf[NodeList]
-//    val stream: Stream[ANode] = Stream.from(0, nl.getLength).map(i => JavaXmlNode(nl.item(i)))
-//    SimpleNodeList(stream)
-//  }
+  //  override def queryOneList(path: NodeSelector): ANodeList = {
+  //    val xpath = xPathfactory.newXPath()
+  //    val expr = xpath.compile(path)
+  //    val nl: NodeList = expr.evaluate(value, XPathConstants.NODESET).asInstanceOf[NodeList]
+  //    val stream: Stream[ANode] = Stream.from(0, nl.getLength).map(i => JavaXmlNode(nl.item(i)))
+  //    SimpleNodeList(stream)
+  //  }
   override def child(key: String): self.type = queryOne(key).asInstanceOf[self.type]
   //override def children: ANode = queryOne("*")
   //override def id = value.Option(value.\@("id")).filter(_.nonEmpty).getOrElse(super.id)
@@ -42,8 +43,8 @@ case class JavaXmlNode(value:org.w3c.dom.Node) extends SNode {self=>
   //  def children: Stream[ANode] = value.\\("_").toStream.map(x => ScalaElemNode(x))
   //
   private def one(seq: NodeList): Node = seq.getLength match {
-    case 1          => seq.item(0)
-    case 0          => throw new IllegalArgumentException(s"No child node.")
+    case 1 => seq.item(0)
+    case 0 => throw new IllegalArgumentException(s"No child node.")
     case x if x > 1 => throw new IllegalArgumentException(s"There are multiple child nodes.")
   }
 
@@ -61,11 +62,12 @@ case class JavaXmlNode(value:org.w3c.dom.Node) extends SNode {self=>
     transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
     transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 
-    out.usingOutputStream(o => transformer.transform(new DOMSource(value),
+    out.usingOutputStream(o => transformer.transform(
+      new DOMSource(value),
       new StreamResult(new OutputStreamWriter(o, "UTF-8"))))
   }
   def all: Stream[SNode] = ???
-//
-//  def $deref($path: Vector[Either[Int,String]]): ANode = ???//new MindMapJavaXmlNode(node.key,path ++ $path)
-//  def $path: Vector[Either[Int,String]] = path
+  //
+  //  def $deref($path: Vector[Either[Int,String]]): ANode = ???//new MindMapJavaXmlNode(node.key,path ++ $path)
+  //  def $path: Vector[Either[Int,String]] = path
 }

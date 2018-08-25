@@ -54,19 +54,19 @@ object FreeMindHoconPickler {
       toHoconStringFromPlainYaml(FreeMindAsObject.toPlainYaml(mind))
     }
     def toHoconStringFromPlainYaml(obj: Any): String = obj match {
-      case map: LinkedHashMap[String, AnyRef] => map.map{case (k,v) => escape(k)+":"+toHoconStringFromPlainYaml(v)}.mkString("{",",","}")
-      case list: Seq[AnyRef]                  => list.map(toHoconStringFromPlainYaml).mkString("[",",","]")
-      case s: String                          => escape(s)
-      case n: Number                          => n.toString
-      case b: java.lang.Boolean               => b.toString
-      case d: DateTime                        => d.toString
-      case null                               => null
+      case map: LinkedHashMap[String, AnyRef] => map.map { case (k, v) => escape(k) + ":" + toHoconStringFromPlainYaml(v) }.mkString("{", ",", "}")
+      case list: Seq[AnyRef] => list.map(toHoconStringFromPlainYaml).mkString("[", ",", "]")
+      case s: String => escape(s)
+      case n: Number => n.toString
+      case b: java.lang.Boolean => b.toString
+      case d: DateTime => d.toString
+      case null => null
       case other =>
         throw new IllegalArgumentException(s"found ${other.getClass.getName} for $other")
     }
-    
-    def escape(value:String) = ConfigUtil.quoteString(value)
-    
+
+    def escape(value: String) = ConfigUtil.quoteString(value)
+
     toHocon(mind)
   }
 }
@@ -87,17 +87,17 @@ object FreeMindAsObject extends FreeMindPickler with SlfLogger {
 
   //type of end lines https://stackoverflow.com/questions/3790454/in-yaml-how-do-i-break-a-string-over-multiple-lines
   def cleanText(text: String, ident: String): String = text match {
-    case ""                    => "_"
-    case "?"                   => """"?""""
-    case t if t.contains("&")  => s""""$t""""
+    case "" => "_"
+    case "?" => """"?""""
+    case t if t.contains("&") => s""""$t""""
     case t if t.contains("\n") => "|\n" + ident + t.replaceAll("\n", "\n" + ident) + "\n\n"
-    case _                     => text
+    case _ => text
   }
   def ifText(condition: Boolean, thenText: => String, elseText: => String): String = {
     if (condition) thenText else elseText
   }
 
-  def toYaml(obj: MindMapEntity)(implicit source:SyamlSource): Syaml = Syaml(toPlainYaml(obj.text, obj))
+  def toYaml(obj: MindMapEntity)(implicit source: SyamlSource): Syaml = Syaml(toPlainYaml(obj.text, obj))
   def toPlainYaml(obj: MindMapEntity): Any = toPlainYaml(obj.text, obj)
   def toPlainYaml(text: String, obj: MindMapEntity, inMap: Boolean = false): Any = {
     logger.debug(s"convert ($text,$obj,inMap=$inMap)")

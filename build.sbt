@@ -155,7 +155,7 @@ pomExtra := (
 )
 
 //eclipse
-EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Always //EclipseCreateSrc.Resource
+EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource //EclipseCreateSrc.Resource
 EclipseKeys.withSource := true
 EclipseKeys.eclipseOutput := Some("target2/eclipse")
 unmanagedSourceDirectories in Compile := (scalaSource in Compile).value :: (javaSource in Compile).value :: Nil

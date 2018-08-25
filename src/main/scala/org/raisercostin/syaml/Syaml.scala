@@ -30,13 +30,13 @@ object Syaml extends org.raisercostin.jedi.impl.SlfLogger {
         SyamlMap(ListMap() ++ m)
       case l: Seq[AnyRef] =>
         SyamlList(l)
-      case x: Tuple2[AnyRef,_] =>
+      case x: Tuple2[AnyRef, _] =>
         SyamlPair(x._1, x._2)
       case e: Throwable =>
         SyamlError(e)
-      case s: String   => SyamlValue(s)
-      case n: Number   => SyamlValue(n)
-      case b: Boolean  => SyamlValue(b)
+      case s: String => SyamlValue(s)
+      case n: Number => SyamlValue(n)
+      case b: Boolean => SyamlValue(b)
       case d: DateTime => SyamlValue(d)
       //case null        => null
       //case other =>
@@ -65,12 +65,12 @@ object Syaml extends org.raisercostin.jedi.impl.SlfLogger {
     import scala.collection.JavaConverters._
     def yamlToScala(obj: AnyRef): AnyRef = obj match {
       case map: java.util.Map[String, AnyRef] => WrappedMap() ++ map.asScala.toMap.mapValues(yamlToScala)
-      case list: java.util.List[AnyRef]       => list.asScala.toList.map(yamlToScala)
-      case s: String                          => s
-      case n: Number                          => n
-      case b: java.lang.Boolean               => b
-      case d: Date                            => new DateTime(d)
-      case null                               => null
+      case list: java.util.List[AnyRef] => list.asScala.toList.map(yamlToScala)
+      case s: String => s
+      case n: Number => n
+      case b: java.lang.Boolean => b
+      case d: Date => new DateTime(d)
+      case null => null
       case other =>
         logger.warn("Unexpected YAML object of type " + other.getClass)
         other.toString
@@ -88,10 +88,10 @@ trait Syaml extends org.raisercostin.jedi.impl.SlfLogger with Dynamic with Itera
   /**Adding `with Iterable[SNode]` breaks toString on case classes. So we redefine it.*/
   override def toString(): String = self.getClass match {
     case t if classOf[Product].isAssignableFrom(t) => ScalaRunTime._toString(self.asInstanceOf[Product])
-    case _                                         => ???
+    case _ => ???
   }
 
-  def explain[T](key:String, keys:Iterable[Any]): PartialFunction[Throwable, Try[T]] = { x =>
+  def explain[T](key: String, keys: Iterable[Any]): PartialFunction[Throwable, Try[T]] = { x =>
     x match {
       case t: Throwable =>
         Failure(new IllegalArgumentException(s"Couldn't find value for key [$key] in [$source]. The keys are [${keys.map(_.toString.take(20)).mkString(",")}]", t))
@@ -132,8 +132,8 @@ trait Syaml extends org.raisercostin.jedi.impl.SlfLogger with Dynamic with Itera
       if (res.isSuccess) {
         logger.debug(s"search with [${param.mkString(",")}] in ${res.toString.take(50)}... at $full")
         param match {
-          case Seq()                => res
-          case Seq(head)            => res.get(head)
+          case Seq() => res
+          case Seq(head) => res.get(head)
           case Seq(head, tail @ _*) => queryRec(res.get(head), tail, full + "." + head.toString.take(20))
         }
       } else {
@@ -179,12 +179,12 @@ trait Syaml extends org.raisercostin.jedi.impl.SlfLogger with Dynamic with Itera
     import scala.collection.JavaConverters._
     def yamlToJava(obj: Any): Any = obj match {
       case map: WrappedMap[_, _] => map.mapValues(yamlToJava).asJava
-      case list: Seq[AnyRef]     => list.map(yamlToJava).asJava
-      case s: String             => s
-      case n: Number             => n
-      case b: java.lang.Boolean  => b
-      case d: DateTime           => new Date(d.getMillis)
-      case null                  => null
+      case list: Seq[AnyRef] => list.map(yamlToJava).asJava
+      case s: String => s
+      case n: Number => n
+      case b: java.lang.Boolean => b
+      case d: DateTime => new Date(d.getMillis)
+      case null => null
       case other =>
         logger.warn("Unexpected YAML object of type " + other.getClass)
         other.toString
@@ -192,7 +192,7 @@ trait Syaml extends org.raisercostin.jedi.impl.SlfLogger with Dynamic with Itera
 
     yamlToJava(obj)
   }
-  
+
   def withChild(key: AnyRef, newValue: Any): SyamlMap = ???
 }
 case class SyamlValue(value: Any)(implicit val source: SyamlSource) extends Syaml {
@@ -206,7 +206,7 @@ case class SyamlPair(key: AnyRef, value: Any)(implicit val source: SyamlSource) 
   override def name: Option[Any] = Some(key)
   def valueAsYaml: Syaml = Syaml(value)
   //override def toString: String = s"SyamlPair($key,$value)"
-  override def withChild(key: AnyRef, newValue: Any): SyamlMap = SyamlMap(ListMap[AnyRef,Any](this.key ->value) + (key -> newValue))(ChangedSyamlSource(source, key, newValue))
+  override def withChild(key: AnyRef, newValue: Any): SyamlMap = SyamlMap(ListMap[AnyRef, Any](this.key -> value) + (key -> newValue))(ChangedSyamlSource(source, key, newValue))
 }
 
 /**Defines the source of syaml class to give better explanations about what it didn't worked.*/
@@ -226,7 +226,7 @@ case class FromParentSyaml(parent: SyamlSource, location: String) extends SyamlS
 
 case class SyamlMap(value: ListMap[AnyRef, _])(implicit val source: SyamlSource) extends Syaml {
   override def get(key: String): Syaml = Syaml {
-    Try { value.get(key).get }.recoverWith(explain(key,value.keys)).get
+    Try { value.get(key).get }.recoverWith(explain(key, value.keys)).get
     //        case t: Throwable =>
     //          Failure(new IllegalArgumentException(s"Couldn't find value for key [$key] in [$source]. The keys are [${value.keys.map(_.toString.take(20)).mkString(",")}]"
     //          , t))
@@ -243,14 +243,14 @@ case class SyamlList(value: Seq[_])(implicit val source: SyamlSource) extends Sy
       recover { case e: Throwable => throw new IllegalArgumentException(s"[$key] is not a index value.", e) }.
       map { index => value(index) }.
       recoverWith { case e: Throwable => Try { findChild(key) } }.
-      recoverWith { explain(key,value) }.
+      recoverWith { explain(key, value) }.
       get)
 
   def findChild(key: String): Any = {
     value.collectFirst {
       case s: WrappedMap[String, _] if s.size == 1 && s.contains(key) =>
         s.get(key).get
-      case s:LinkedHashMap[String,_] if s.size == 1 && s.contains(key) =>
+      case s: LinkedHashMap[String, _] if s.size == 1 && s.contains(key) =>
         s.get(key).get
     }.get
   }
